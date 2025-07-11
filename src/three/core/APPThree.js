@@ -34,7 +34,7 @@ export default class APPThree {
         })
 
         //? Utils
-        this.statsManager = new StatsManager({ disabled: false });
+        this.statsManager = new StatsManager({ disabled: true });
         this.transformControlsHelper = new TransformControlsHelper({
             camera: this.cameraManager.getCamera(),
             hidden: true,
