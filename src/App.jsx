@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import './App.css'
 import APPThree from '@three/core/APPThree';
+import Loading3D from '@components/Loading3D';
 
 function App() {
 
@@ -23,10 +24,13 @@ function App() {
     <>
       <div className='h-dvh w-dvw relative'>
 
+        <Loading3D />
+
         {/* canvas */}
         <div className="w-full h-full relative">
           <div ref={containerAppThree} id="container" className="absolute z-10 h-full w-full"></div>
         </div>
+
 
       </div>
     </>

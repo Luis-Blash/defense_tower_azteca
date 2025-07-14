@@ -25,8 +25,9 @@ export default class SceneLoaderManager {
 			sceneParams,
 		);
 
-		this.loadingManager.onProgress = () => {
-			ObserverEmitter.emit(EVENTS.loader3D.onProgress);
+		this.loadingManager.onProgress = (url, loaded, total) => {
+			const percent = (loaded * 100) / total
+			ObserverEmitter.emit(EVENTS.loader3D.onProgress, percent);
 		};
 
 		this.loadingManager.onLoad = () => {
@@ -36,7 +37,7 @@ export default class SceneLoaderManager {
 		};
 
 		//! SI DESDE UN INICIO NECESITA EL LOADER AGREGA ESTA PARTE A ONLOAD DEL LOADER
-		callback(sceneInstance)
-		ObserverEmitter.emit(EVENTS.loader3D.onLoad);
+		// callback(sceneInstance)
+		// ObserverEmitter.emit(EVENTS.loader3D.onLoad);
 	}
 }

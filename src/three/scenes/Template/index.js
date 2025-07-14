@@ -1,11 +1,12 @@
 import { AmbientLight, Scene } from "three";
 
-import CubeSelect from "@three/entities/object/CubeSelect";
-
 import ActityOne from "./ActivityOne";
 const Activities = {
 	1: ActityOne
 }
+
+import CubeSelect from "@three/entities/object/CubeSelect";
+import Goal from "@three/entities/object/Goal";
 
 export default class TemplateScene extends Scene {
 	// configApp { loadingManager, camera, hdri }, sceneParams lo que le pases
@@ -31,6 +32,8 @@ export default class TemplateScene extends Scene {
 	init() {
 		this.cubeSelect = new CubeSelect()
 		this.add(this.cubeSelect)
+		this.goal = new Goal({ loadingManager: this.loadingManager })
+		this.add(this.goal)
 	}
 
 	reActiveScene(sceneParams = { activity: 0 }) {
