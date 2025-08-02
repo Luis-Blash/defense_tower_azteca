@@ -2,6 +2,7 @@ import { Vector3 } from "three";
 import Tower from "@three/entities/tower/core/Tower";
 import Enemy from "@three/entities/enemy/core/Enemy";
 import TowerManager from "@three/entities/tower/manager/TowerManager";
+import EnemyManager from "@three/entities/enemy/managers/EnemyManager";
 
 export default class ActityOne {
     constructor(camera, scene) {
@@ -12,24 +13,37 @@ export default class ActityOne {
     }
 
     init() {
-        this.enemy = new Enemy({
-            debug: true
-        })
-        this.enemy.position.set(0, 0, 6)
-        this.enemy.name = "enemy1"
-        this.scene.add(this.enemy)
-
-        this.enemy2 = new Enemy({
-            debug: true
-        })
-        this.enemy2.name = "enemy2"
-        this.scene.add(this.enemy2)
-
-        this.enemies = [this.enemy, this.enemy2]
-
         this.towerManager = new TowerManager(this.scene, this.scene.loadingManager);
         this.towerManager.addEventListener('towerCreated', this.onTowerCreated.bind(this));
+
+        this.enemyManager = new EnemyManager(this.scene, this.scene.loadingManager);
+        this.enemyManager.addEventListener('enemyCreated', this.onEnemyCreated.bind(this));
+        this.enemyManager.addEventListener('enemiesRemoved', this.onEnemiesRemoved.bind(this));
+
         this.createTower()
+        this.createEnemy()
+    }
+
+    createEnemy() {
+        this.enemyManager.createEnemy(
+            Enemy,
+            new Vector3(0, 0, 6),
+            {
+                debug: true,
+                speed: -1,
+                life: 40,
+            }
+        );
+        this.enemyManager.createEnemy(
+            Enemy,
+            new Vector3(0, 0, 0),
+            {
+                debug: true,
+                speed: -2,
+                life: 40,
+            }
+        );
+
     }
 
     createTower() {
@@ -51,6 +65,16 @@ export default class ActityOne {
         console.log('Torre creada:', event.id);
     }
 
+    onEnemyCreated(event) {
+        console.log('Enemigo creado:', event.id);
+        console.log('Total enemigos activos:', this.enemyManager.getActiveEnemyCount());
+    }
+
+    onEnemiesRemoved(event) {
+        console.log(`${event.count} enemigos eliminados:`, event.removedIds);
+        console.log('Enemigos restantes:', this.enemyManager.getActiveEnemyCount());
+    }
+    
     reActiveScene() {
     }
 
@@ -58,12 +82,7 @@ export default class ActityOne {
     }
 
     renderAnimations(delta) {
-        this.towerManager.updateTowers(delta, this.enemies || []);
-        if(this.enemy){
-            this.enemy.position.x += delta * -1;
-        }
-        if(this.enemy2){
-            this.enemy2.position.x += delta * -0.5;
-        }
+        this.towerManager.updateTowers(delta, this.enemyManager.getAllEnemies());
+        this.enemyManager.updateEnemies(delta);
     }
 }

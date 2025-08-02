@@ -2,10 +2,9 @@
 import { EventDispatcher } from 'three';
 
 export default class TowerManager extends EventDispatcher {
-    constructor(scene, loadingManager) {
+    constructor(scene) {
         super();
         this.scene = scene;
-        this.loadingManager = loadingManager;
         this.towers = new Map();
         this.towerCount = 0;
     }
@@ -49,10 +48,6 @@ export default class TowerManager extends EventDispatcher {
         this.towers.forEach(tower => {
             tower.update(delta, enemies);
         });
-    }
-    
-    getTower(towerId) {
-        return this.towers.get(towerId);
     }
     
     getAllTowers() {
