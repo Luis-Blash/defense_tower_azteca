@@ -2,6 +2,15 @@
 import { BoxGeometry, Mesh, MeshBasicMaterial, Object3D } from 'three';
 import TowerCollision from './TowerCollision.js';
 
+const getClosestTarget = (towerPosition, targets) => {
+    return targets.reduce((closest, enemy) => {
+        const distanceToEnemy = enemy.position.distanceTo(towerPosition);
+        return distanceToEnemy < closest.position.distanceTo(towerPosition)
+            ? enemy
+            : closest;
+    });
+}
+
 export default class Tower extends Object3D {
     /**
      * Crea una nueva torre.
@@ -13,144 +22,98 @@ export default class Tower extends Object3D {
      * @param {number} [config.fireRate=1] - Disparos por segundo.
      * @param {number} [config.cost=100] - Costo de construcción de la torre.
      * @param {Object} [config.debug=false] - Debug de la torre.
-     * @param {Object} [config.debugCollision=false] - Debug de la colisión.
      */
     constructor(config = {}) {
         super();
-        
-        // Propiedades de la torre
-        this.life = config.life || 100;
-        this.maxLife = config.maxLife || 100;
-        this.damage = config.damage || 10;
-        this.range = config.range || 5;
-        this.fireRate = config.fireRate || 1;
-        this.cost = config.cost || 100;
-        
+
+
+        // Inicialización de estadísticas
+        this.statsInit(config);
+        // Modelo 3D (será asignado por las clases hijas)
+        this.model = null;
+        // Sistema de colisión
+        this.collision = new TowerCollision(this, this.stats.range, config.debug);
+        // Debug
+        this.configDebugTower(config.debug);
+
+    }
+
+    statsInit(config = {}) {
+        const {
+            life = 100,
+            maxLife = 100,
+            damage = 10,
+            range = 5,
+            fireRate = 1,
+            cost = 100,
+        } = config;
+
+        this.stats = {
+            life,
+            maxLife,
+            damage,
+            range,
+            fireRate,
+            cost,
+        };
+
         // Estado interno
         this.targets = [];
         this.currentTarget = null;
-        this.lastFireTime = 0;
+        this.timeSinceLastFire = 0;
         this.isActive = true;
-        
-        // Sistema de colisión
-        this.collision = new TowerCollision(this, this.range, config.debugCollision);
-        
-        // Modelo 3D (será asignado por las clases hijas)
-        this.model = null;
+    }
 
-        //mesh Area
+    configDebugTower(debug) {
         const geometry = new BoxGeometry(1, 3, 1); // Ancho, Alto, Profundidad
-        const material = new MeshBasicMaterial({ 
+        const material = new MeshBasicMaterial({
             color: 0x00ff00,
-            transparent: true, 
+            transparent: true,
             opacity: 0.2,
             wireframe: true
         });
         const cube = new Mesh(geometry, material);
-        if(!this.debug) this.add(cube);
-        
-        this.init();
-    }
-    
-    init() {
-        // Configuración inicial
-        this.setupCollisionArea();
-    }
-    
-    setupCollisionArea() {
-        // El área de colisión se maneja en TowerCollision
+        if (debug) this.add(cube);
         this.add(this.collision.getVisualRange());
     }
-    
-    // Método principal de actualización
+
     update(delta, enemies = []) {
         if (!this.isActive) return;
-        
         this.findTargets(enemies);
         this.selectTarget();
         this.attack(delta);
-        this.updateModel(delta);
     }
-    
-    findTargets(enemies) {
-        this.targets = this.collision.getEnemiesInRange(enemies);
-    }
-    
+
     selectTarget() {
         if (this.targets.length === 0) {
             this.currentTarget = null;
             return;
         }
-        
-        // Estrategia: atacar al enemigo más cercano al objetivo
-        this.currentTarget = this.targets.reduce((closest, enemy) => {
-            return enemy.distanceToGoal < closest.distanceToGoal ? enemy : closest;
-        });
+        this.currentTarget = getClosestTarget(this.position, this.targets);
     }
-    
+
     attack(delta) {
         if (!this.currentTarget) return;
-        
-        const currentTime = Date.now();
-        const timeSinceLastFire = currentTime - this.lastFireTime;
-        const fireInterval = 1000 / this.fireRate;
-        
-        if (timeSinceLastFire >= fireInterval) {
+
+        this.timeSinceLastFire += delta;
+        const fireInterval = 1 / this.stats.fireRate;
+
+        if (this.timeSinceLastFire >= fireInterval) {
             this.fire();
-            this.lastFireTime = currentTime;
+            this.timeSinceLastFire = 0;
         }
     }
-    
+
     fire() {
         if (!this.currentTarget) return;
-        
         // Aplicar daño al objetivo
-        this.currentTarget.takeDamage(this.damage);
-        
+        this.currentTarget.takeDamage(this.stats.damage);
         // Rotar hacia el objetivo
         this.lookAt(this.currentTarget.position);
-        
-        // Efectos visuales (implementar en clases hijas)
-        this.playFireAnimation();
-        this.createProjectile();
     }
-    
-    // Métodos para override en clases hijas
-    playFireAnimation() {
-        // Implementar en clases específicas
+
+    findTargets(enemies = []) {
+        this.targets = this.collision.getEnemiesInRange(enemies);
     }
-    
-    createProjectile() {
-        // Implementar en clases específicas
-    }
-    
-    updateModel(delta) {
-        // Actualizar animaciones del modelo 3D
-        if (this.model && this.model.update) {
-            this.model.update(delta);
-        }
-    }
-    
-    // Métodos de gestión
-    upgrade() {
-        this.level++;
-        this.damage *= 1.2;
-        this.range *= 1.1;
-        this.fireRate *= 1.1;
-    }
-    
-    setModel(modelInstance) {
-        if (this.model) {
-            this.remove(this.model);
-        }
-        this.model = modelInstance;
-        this.add(this.model);
-    }
-    
-    dispose() {
-        if (this.model && this.model.dispose) {
-            this.model.dispose();
-        }
-        this.collision.dispose();
-    }
+
 }

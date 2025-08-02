@@ -33,30 +33,8 @@ export default class TowerCollision {
         return enemiesInRange;
     }
     
-    isEnemyInRange(enemy) {
-        return this.tower.position.distanceTo(enemy.position) <= this.range;
-    }
-    
     getVisualRange() {
         return this.rangeMesh;
-    }
-    
-    showRange() {
-        this.rangeMesh.visible = true;
-    }
-    
-    hideRange() {
-        this.rangeMesh.visible = false;
-    }
-    
-    updateRange(newRange) {
-        this.range = newRange;
-        this.sphere.radius = newRange;
-        
-        // Actualizar geometría visual
-        this.rangeGeometry.dispose();
-        this.rangeGeometry = new SphereGeometry(newRange, 16, 8);
-        this.rangeMesh.geometry = this.rangeGeometry;
     }
     
     dispose() {

@@ -6,10 +6,7 @@ const Activities = {
 }
 
 // Entities
-import Tower from "@three/entities/tower/core/Tower";
 import MapScene from "@three/entities/map/core/MapScene";
-// Utils
-// import { cameraDataGui } from "@three/utils/helperDatGui";
 
 
 export default class SceneOne extends Scene {
@@ -39,18 +36,6 @@ export default class SceneOne extends Scene {
 		this.camera.position.set(-28.0639, 15.7978, 18.1383)
 		this.camera.rotation.set(-0.7165, -0.8622, -0.5843)
 		this.camera.disabledOrbitControls()
-		// cameraDataGui(this.camera)
-
-		this.tower = new Tower({
-			damage: 10,
-			range: 5,
-			fireRate: 1,
-			cost: 100,
-			level: 1,
-			debug: true,
-			debugCollision: true
-		})
-		this.add(this.tower)
 
 		this.map = new MapScene({
 			width: 40,
@@ -61,7 +46,6 @@ export default class SceneOne extends Scene {
 		this.map.position.set(0, -2, 0)
 		this.add(this.map)
 
-		// this.transformControlsHelper.addMesh(this.tower, this)
 	}
 
 	reActiveScene(sceneParams = { activity: 0 }) {

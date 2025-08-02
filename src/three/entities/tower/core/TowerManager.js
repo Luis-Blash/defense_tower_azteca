@@ -10,12 +10,9 @@ export default class TowerManager extends EventDispatcher {
         this.towerCount = 0;
     }
     
-    async createTower(TowerClass, position, config = {}) {
+    createTower(TowerClass, position, config = {}) {
         const tower = new TowerClass(config);
         tower.position.copy(position);
-        
-        // Cargar modelo
-        await tower.loadModel(this.loadingManager);
         
         // Añadir a la escena
         this.scene.add(tower);
