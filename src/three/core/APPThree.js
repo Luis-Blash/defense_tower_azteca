@@ -72,7 +72,8 @@ export default class APPThree {
 
             //? Cambia la escena inicial
             this.sceneChangueManager.changeScene({
-                sceneName: "testScene",
+                sceneName: "sceneOne",
+                sceneParams: { activity: 1 },
                 callback: () => {
                     this.render();
                 }

@@ -48,10 +48,10 @@ export default class TransformControlsHelper {
         this.transformControls = new TransformControls(camera, domElement);
         this.currentMesh = null;
 
-        this.keyboardControls();
         this.transformControls.enabled = false;
         if (!hidden) {
             domInstruction({ isActive: this.transformControls.enabled })
+            this.keyboardControls();
         }
     }
 

@@ -1,0 +1,69 @@
+// src/three/entities/tower/core/TowerManager.js
+import { EventDispatcher } from 'three';
+
+export default class TowerManager extends EventDispatcher {
+    constructor(scene, loadingManager) {
+        super();
+        this.scene = scene;
+        this.loadingManager = loadingManager;
+        this.towers = new Map();
+        this.towerCount = 0;
+    }
+    
+    async createTower(TowerClass, position, config = {}) {
+        const tower = new TowerClass(config);
+        tower.position.copy(position);
+        
+        // Cargar modelo
+        await tower.loadModel(this.loadingManager);
+        
+        // Añadir a la escena
+        this.scene.add(tower);
+        
+        // Registrar torre
+        const towerId = `tower_${this.towerCount++}`;
+        this.towers.set(towerId, tower);
+        
+        // Emitir evento
+        this.dispatchEvent({
+            type: 'towerCreated',
+            tower: tower,
+            id: towerId
+        });
+        
+        return { tower, id: towerId };
+    }
+    
+    removeTower(towerId) {
+        const tower = this.towers.get(towerId);
+        if (tower) {
+            this.scene.remove(tower);
+            tower.dispose();
+            this.towers.delete(towerId);
+            
+            this.dispatchEvent({
+                type: 'towerRemoved',
+                id: towerId
+            });
+        }
+    }
+    
+    updateTowers(delta, enemies = []) {
+        this.towers.forEach(tower => {
+            tower.update(delta, enemies);
+        });
+    }
+    
+    getTower(towerId) {
+        return this.towers.get(towerId);
+    }
+    
+    getAllTowers() {
+        return Array.from(this.towers.values());
+    }
+    
+    dispose() {
+        this.towers.forEach(tower => tower.dispose());
+        this.towers.clear();
+    }
+}

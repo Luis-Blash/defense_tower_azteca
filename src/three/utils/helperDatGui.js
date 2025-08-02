@@ -20,8 +20,8 @@ export const dataGuiModalsBasic = (object = null, limit = 10) => {
 export const cameraDataGui = (cameraController) => {
 	if (!cameraController) return;
 
-	const camera = cameraController.controls.camera
-	const control = cameraController.controls.controls
+	const camera = cameraController.orbit.camera
+	const control = cameraController.orbit.controls
 
 	const cameraControls = gui.addFolder("camera");
 	cameraControls.add(camera.position, "x", -300, 300).step(0.0001).listen();

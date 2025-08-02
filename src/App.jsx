@@ -27,8 +27,8 @@ function App() {
         <Loading3D />
 
         {/* canvas */}
-        <div className="w-full h-full relative">
-          <div ref={containerAppThree} id="container" className="absolute z-10 h-full w-full"></div>
+        <div className="w-full h-full">
+          <div ref={containerAppThree} id="container" className="h-full w-full"></div>
         </div>
 
 
