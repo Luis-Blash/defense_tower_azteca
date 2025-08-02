@@ -1,7 +1,7 @@
 import { Vector3 } from "three";
 import Tower from "@three/entities/tower/core/Tower";
 import Enemy from "@three/entities/enemy/core/Enemy";
-import TowerManager from "@three/entities/tower/core/TowerManager";
+import TowerManager from "@three/entities/tower/manager/TowerManager";
 
 export default class ActityOne {
     constructor(camera, scene) {
@@ -15,7 +15,7 @@ export default class ActityOne {
         this.enemy = new Enemy({
             debug: true
         })
-        this.enemy.position.set(0, 0, 60)
+        this.enemy.position.set(0, 0, 6)
         this.enemy.name = "enemy1"
         this.scene.add(this.enemy)
 

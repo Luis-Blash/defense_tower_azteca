@@ -1,15 +1,7 @@
 // src/three/entities/tower/core/Tower.js
 import { BoxGeometry, Mesh, MeshBasicMaterial, Object3D } from 'three';
 import TowerCollision from './TowerCollision.js';
-
-const getClosestTarget = (towerPosition, targets) => {
-    return targets.reduce((closest, enemy) => {
-        const distanceToEnemy = enemy.position.distanceTo(towerPosition);
-        return distanceToEnemy < closest.position.distanceTo(towerPosition)
-            ? enemy
-            : closest;
-    });
-}
+import TowerAttack from './TowerAttack.js';
 
 export default class Tower extends Object3D {
     /**
@@ -26,19 +18,20 @@ export default class Tower extends Object3D {
     constructor(config = {}) {
         super();
 
-
-        // Inicialización de estadísticas
-        this.statsInit(config);
-        // Modelo 3D (será asignado por las clases hijas)
-        this.model = null;
+        this.statsTower(config)
         // Sistema de colisión
-        this.collision = new TowerCollision(this, this.stats.range, config.debug);
+        this.collision = new TowerCollision(this, this.range, config.debug);
+        // Sistema de ataque
+        this.attack = new TowerAttack(this, {
+            fireRate: this.fireRate,
+            damage: this.damage
+        });
         // Debug
         this.configDebugTower(config.debug);
 
     }
 
-    statsInit(config = {}) {
+    statsTower(config = {}) {
         const {
             life = 100,
             maxLife = 100,
@@ -48,20 +41,14 @@ export default class Tower extends Object3D {
             cost = 100,
         } = config;
 
-        this.stats = {
-            life,
-            maxLife,
-            damage,
-            range,
-            fireRate,
-            cost,
-        };
-
-        // Estado interno
-        this.targets = [];
-        this.currentTarget = null;
-        this.timeSinceLastFire = 0;
+        this.life = life;
+        this.maxLife = maxLife;
+        this.cost = cost;
+        this.range = range;
         this.isActive = true;
+        this.fireRate = fireRate;
+        this.damage = damage;
+        this.model = null;
     }
 
     configDebugTower(debug) {
@@ -79,41 +66,8 @@ export default class Tower extends Object3D {
 
     update(delta, enemies = []) {
         if (!this.isActive) return;
-        this.findTargets(enemies);
-        this.selectTarget();
-        this.attack(delta);
-    }
-
-    selectTarget() {
-        if (this.targets.length === 0) {
-            this.currentTarget = null;
-            return;
-        }
-        this.currentTarget = getClosestTarget(this.position, this.targets);
-    }
-
-    attack(delta) {
-        if (!this.currentTarget) return;
-
-        this.timeSinceLastFire += delta;
-        const fireInterval = 1 / this.stats.fireRate;
-
-        if (this.timeSinceLastFire >= fireInterval) {
-            this.fire();
-            this.timeSinceLastFire = 0;
-        }
-    }
-
-    fire() {
-        if (!this.currentTarget) return;
-        // Aplicar daño al objetivo
-        this.currentTarget.takeDamage(this.stats.damage);
-        // Rotar hacia el objetivo
-        this.lookAt(this.currentTarget.position);
-    }
-
-    findTargets(enemies = []) {
-        this.targets = this.collision.getEnemiesInRange(enemies);
+        const targets = this.collision.getEnemiesInRange(enemies);
+        this.attack.update(delta, targets)
     }
 
 }
