@@ -15,7 +15,6 @@ export default class EnemyWaypoint {
         // Movimiento
         this.distanceToGoal = 0;
         this.totalPathDistance = 0;
-        this.hasReachedGoal = false;
         this.waypointThreshold = 0.1;
         this.velocity = new Vector3();
 
@@ -59,7 +58,7 @@ export default class EnemyWaypoint {
 
     // Implementar el método move:
     move(delta) {
-        if (this.hasReachedGoal || !this.enemy.active || this.path.length === 0) return;
+        if (this.enemy.hasReachedGoal || !this.enemy.active || this.path.length === 0) return;
 
         const moveDistance = this.speed * delta;
 
@@ -84,8 +83,7 @@ export default class EnemyWaypoint {
             const reachedGoal = this.moveTowardsTarget(this.goalPosition, moveDistance);
 
             if (reachedGoal) {
-                this.hasReachedGoal = true;
-                console.log('Enemy ha llegado al goal!');
+                this.enemy.hasReachedGoal = true;
             }
         }
     }

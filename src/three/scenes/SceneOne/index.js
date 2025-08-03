@@ -35,7 +35,11 @@ export default class SceneOne extends Scene {
 
 		this.camera.position.set(-28.0639, 15.7978, 18.1383)
 		this.camera.rotation.set(-0.7165, -0.8622, -0.5843)
-		this.camera.disabledOrbitControls()
+		this.camera.orbit.controls.minPolarAngle = Math.PI / 3;
+		this.camera.orbit.controls.maxPolarAngle = Math.PI / 3;
+		this.camera.orbit.controls.enableZoom = false
+		this.camera.orbit.controls.enablePan = true
+		this.camera.orbit.controls.enableRotate = true
 
 		this.map = new MapScene({
 			width: 40,

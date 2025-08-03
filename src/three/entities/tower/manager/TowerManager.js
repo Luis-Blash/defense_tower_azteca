@@ -20,13 +20,6 @@ export default class TowerManager extends EventDispatcher {
         const towerId = `tower_${this.towerCount++}`;
         this.towers.set(towerId, tower);
         
-        // Emitir evento
-        this.dispatchEvent({
-            type: 'towerCreated',
-            tower: tower,
-            id: towerId
-        });
-        
         return { tower, id: towerId };
     }
     
@@ -36,11 +29,6 @@ export default class TowerManager extends EventDispatcher {
             this.scene.remove(tower);
             tower.dispose();
             this.towers.delete(towerId);
-            
-            this.dispatchEvent({
-                type: 'towerRemoved',
-                id: towerId
-            });
         }
     }
     

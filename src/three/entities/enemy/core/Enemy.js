@@ -22,6 +22,7 @@ export default class Enemy extends Object3D {
         } = config
 
         this.active = true;
+        this.hasReachedGoal = false;
         this.healthComponent = new HealthComponent({ life, maxLife })
         this.enemyWaypoint = new EnemyWaypoint(this, { speed })
         this.debugMesh(debug)

@@ -1,130 +1,92 @@
-// src/three/entities/tower/core/EnemyManager.js
-import { EventDispatcher, Vector3 } from 'three';
+import { EventDispatcher } from "three";
+import EnemySpawner from "./EnemySpawner";
+import EnemyTracker from "./EnemyTracker";
+import PathManager from "./PathManager";
 
 export default class EnemyManager extends EventDispatcher {
     constructor(scene) {
         super();
         this.scene = scene;
-        this.enemies = new Map();
-        this.enemyCount = 0;
 
-        this.spawnPoint = new Vector3(0, 0, 0);
-        this.waypoints = [];
-        this.goal = null;
+        // Componentes especializados
+        this.spawner = new EnemySpawner(scene);
+        this.tracker = new EnemyTracker();
+        this.pathManager = new PathManager();
+
+        // Configurar eventos entre componentes
+        this.setupEventListeners();
+    }
+
+    setupEventListeners() {
+        // Eventos del spawner
+        this.spawner.addEventListener('enemySpawned', (event) => {
+            const { enemy, id } = event;
+            this.tracker.addEnemy(id, enemy);
+        });
+
+        // Eventos del tracker
+        this.tracker.addEventListener('enemyReachedGoal', (event) => {
+            this.tracker.removeEnemy(event.enemyId);
+        });
     }
 
     createEnemy(EnemyClass, config = {}) {
-        const enemy = new EnemyClass(config);
-        
-        enemy.position.copy(this.spawnPoint);
-        enemy.setPath(this.waypoints, this.goal);
-
-        // Añadir a la escena
-        this.scene.add(enemy);
-
-        // Registrar torre
-        const enemyId = `enemy_${this.enemyCount++}`;
-        this.enemies.set(enemyId, enemy);
-
-        // Emitir evento
-        this.dispatchEvent({
-            type: 'enemyCreated',
-            enemy: enemy,
-            id: enemyId
-        });
-
-        return { enemy, id: enemyId };
-    }
-
-    removeEnemy(enemyId) {
-        const enemy = this.enemies.get(enemyId);
-        if (enemy) {
-            this.scene.remove(enemy);
-            // Limpiar recursos
-            if (enemy.dispose) {
-                enemy.dispose();
-            }
-            // Remover del mapa
-            this.enemies.delete(enemyId);
-
-            console.log(`Enemy ${enemyId} removed successfully`);
-            return true;
-        }
-        return false;
+        const path = this.pathManager.getCurrentPath();
+        return this.spawner.spawnEnemy(EnemyClass, config, path);
     }
 
     updateEnemies(delta) {
-        const enemiesToRemove = [];
-
-        // Actualizar todos los enemigos
-        this.enemies.forEach((enemy, enemyId) => {
-            enemy.update(delta);
-
-            // Verificar si debe ser eliminado
-            if (!enemy.active || enemy.life <= 0) {
-                enemiesToRemove.push(enemyId);
-            }
-        });
-
-        // Eliminar enemigos marcados para eliminación
-        enemiesToRemove.forEach(enemyId => {
-            this.removeEnemy(enemyId);
-        });
-
-        // Emitir evento si se eliminaron enemigos
-        if (enemiesToRemove.length > 0) {
-            this.dispatchEvent({
-                type: 'enemiesRemoved',
-                count: enemiesToRemove.length,
-                removedIds: enemiesToRemove
-            });
-        }
+        this.tracker.updateEnemies(delta);
+        this.spawner.update(delta, this.tracker.getActiveEnemyCount());
     }
 
-    /**
-     * Establece el camino para los enemigos.
-     * @param {Array} waypoints - Lista de waypoints.
-     * @param {Object3D} goal - Meta final.
-     */
+    // Configuración de caminos
     setPath(waypoints = [], goal) {
-        this.waypoints = waypoints.map(wp => wp.position.clone());
-        this.goal = goal;
-
-        if (waypoints.length > 0) {
-            this.spawnPoint.copy(waypoints[0].position);
-        }
+        this.pathManager.setPath(waypoints, goal);
     }
 
+    //
     /**
-     * Obtiene un enemigo por su ID.
-     * @param {string} enemyId - ID del enemigo.
-     * @returns {Enemy | undefined} - Enemigo encontrado o undefined si no se encuentra.
+     * Configura las waves de enemigos
+     * @param {Array} waves [{
+     *      name: string,
+     *      spawnInterval: number,
+     *      maxEnemies: number,
+     *      enemiesTypes: Array
+     * }]
      */
+    configureWaves(waves = []) {
+        this.spawner.configureWaves(waves, this.pathManager.getCurrentPath())
+    }
+
+    setNextWave() {
+        this.spawner.setNextWave()
+    }
+
+    // Métodos de consulta
     getEnemyById(enemyId) {
-        return this.enemies.get(enemyId);
+        return this.tracker.getEnemyById(enemyId);
     }
 
     getAllEnemies() {
-        return Array.from(this.enemies.values());
+        return this.tracker.getAllEnemies();
     }
 
     getActiveEnemies() {
-        return Array.from(this.enemies.values()).filter(enemy => enemy.active);
+        return this.tracker.getActiveEnemies();
     }
 
     getActiveEnemyCount() {
-        return this.getActiveEnemies().length;
+        return this.tracker.getActiveEnemyCount();
     }
 
     clearAllEnemies() {
-        const enemyIds = Array.from(this.enemies.keys());
-        enemyIds.forEach(enemyId => {
-            this.removeEnemy(enemyId);
-        });
+        this.tracker.clearAllEnemies();
     }
 
     dispose() {
-        this.clearAllEnemies();
-        this.enemies.clear();
+        this.spawner.dispose();
+        this.tracker.dispose();
+        this.pathManager.dispose();
     }
 }

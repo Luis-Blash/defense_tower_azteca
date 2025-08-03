@@ -7,7 +7,8 @@ import TowerManager from "@three/entities/tower/manager/TowerManager";
 import EnemyManager from "@three/entities/enemy/managers/EnemyManager";
 
 // util
-import { meshListGui } from "@three/utils/helperDatGui";
+// import { meshListGui } from "@three/utils/helperDatGui";
+
 
 export default class ActityOne {
     constructor(camera, scene) {
@@ -24,36 +25,11 @@ export default class ActityOne {
         this.scene.add(this.pyramid);
 
         this.towerManager = new TowerManager(this.scene, this.scene.loadingManager);
-        this.towerManager.addEventListener('towerCreated', this.onTowerCreated.bind(this));
-
         this.enemyManager = new EnemyManager(this.scene, this.scene.loadingManager);
-        this.enemyManager.addEventListener('enemyCreated', this.onEnemyCreated.bind(this));
-        this.enemyManager.addEventListener('enemiesRemoved', this.onEnemiesRemoved.bind(this));
 
         this.setupWaypoints()
-
-        // test
-        this.enemyManager.createEnemy(
-            Enemy,
-            {
-                debug: true,
-                speed: 5,
-                life: 40,
-            }
-        );
-
-        this.towerManager.createTower(
-            Tower,
-            new Vector3(6.466, 0, 0),
-            {
-                damage: 10,
-                range: 10,
-                fireRate: 1,
-                cost: 100,
-                level: 1,
-                debug: true,
-            }
-        );
+        this.configureWavesNivel()
+        this.setNextWave()
 
         // const objectToGui = this.towerManager.getTowerById("tower_0")
         // this.scene.transformControlsHelper.addMesh(objectToGui, this.scene);
@@ -63,11 +39,11 @@ export default class ActityOne {
     setupWaypoints() {
         const waypoints = []
         const waypointsConfig = [
-            { position: new Vector3(-10, 0, 0), config: { debug: true } },
-            { position: new Vector3(-5, 0, 5), config: { debug: true } },
-            { position: new Vector3(0, 0, 5), config: { debug: true } },
-            { position: new Vector3(5, 0, 2), config: { debug: true } },
             { position: new Vector3(8, 0, -3), config: { debug: true } },
+            { position: new Vector3(5, 0, 2), config: { debug: true } },
+            { position: new Vector3(0, 0, 5), config: { debug: true } },
+            { position: new Vector3(-5, 0, 5), config: { debug: true } },
+            { position: new Vector3(-10, 0, 0), config: { debug: true } },
         ];
 
         waypointsConfig.forEach((wp, index) => {
@@ -79,20 +55,37 @@ export default class ActityOne {
         this.enemyManager.setPath(waypoints, this.pyramid)
     }
 
-
-
-    onTowerCreated(event) {
-        console.log('Torre creada:', event.id);
+    configureWavesNivel() {
+        const waves = [
+            {
+                name: "wave_1",
+                spawnInterval: 3000,
+                maxEnemies: 3,
+                enemiesTypes: [
+                    {
+                        EnemyClass: Enemy,
+                        config: {
+                            debug: true,
+                            speed: 5,
+                            life: 40,
+                        }
+                    },
+                    {
+                        EnemyClass: Enemy,
+                        config: {
+                            debug: true,
+                            speed: 8,
+                            life: 60,
+                        }
+                    }
+                ]
+            }
+        ]
+        this.enemyManager.configureWaves(waves)
     }
 
-    onEnemyCreated(event) {
-        console.log('Enemigo creado:', event.id);
-        console.log('Total enemigos activos:', this.enemyManager.getActiveEnemyCount());
-    }
-
-    onEnemiesRemoved(event) {
-        console.log(`${event.count} enemigos eliminados:`, event.removedIds);
-        console.log('Enemigos restantes:', this.enemyManager.getActiveEnemyCount());
+    setNextWave() {
+        this.enemyManager.setNextWave()
     }
 
     reActiveScene() {
