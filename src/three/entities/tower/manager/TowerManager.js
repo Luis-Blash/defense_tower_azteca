@@ -49,6 +49,10 @@ export default class TowerManager extends EventDispatcher {
             tower.update(delta, enemies);
         });
     }
+
+    getTowerById(towerId) {
+        return this.towers.get(towerId);
+    }
     
     getAllTowers() {
         return Array.from(this.towers.values());

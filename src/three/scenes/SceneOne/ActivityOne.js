@@ -7,21 +7,7 @@ import TowerManager from "@three/entities/tower/manager/TowerManager";
 import EnemyManager from "@three/entities/enemy/managers/EnemyManager";
 
 // util
-// import { meshListGui } from "@three/utils/helperDatGui";
-
-
-//     this.towerManager.createTower(
-//         Tower,
-//         new Vector3(-13.536, 0, 0),
-//         {
-//             damage: 10,
-//             range: 10,
-//             fireRate: 1,
-//             cost: 100,
-//             level: 1,
-//             debug: this.debugGlobal,
-//         }
-//     );
+import { meshListGui } from "@three/utils/helperDatGui";
 
 export default class ActityOne {
     constructor(camera, scene) {
@@ -56,7 +42,20 @@ export default class ActityOne {
             }
         );
 
-        // const objectToGui = this.enemyManager.getEnemyById("enemy_0")
+        this.towerManager.createTower(
+            Tower,
+            new Vector3(6.466, 0, 0),
+            {
+                damage: 10,
+                range: 10,
+                fireRate: 1,
+                cost: 100,
+                level: 1,
+                debug: true,
+            }
+        );
+
+        // const objectToGui = this.towerManager.getTowerById("tower_0")
         // this.scene.transformControlsHelper.addMesh(objectToGui, this.scene);
         // meshListGui(objectToGui)
     }
@@ -103,7 +102,7 @@ export default class ActityOne {
     }
 
     renderAnimations(delta) {
-        // this.towerManager.updateTowers(delta, this.enemyManager.getAllEnemies());
+        this.towerManager.updateTowers(delta, this.enemyManager.getAllEnemies());
         this.enemyManager.updateEnemies(delta);
     }
 }

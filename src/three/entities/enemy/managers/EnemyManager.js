@@ -61,7 +61,7 @@ export default class EnemyManager extends EventDispatcher {
             enemy.update(delta);
 
             // Verificar si debe ser eliminado
-            if (enemy.shouldRemove || enemy.life <= 0) {
+            if (!enemy.active || enemy.life <= 0) {
                 enemiesToRemove.push(enemyId);
             }
         });
