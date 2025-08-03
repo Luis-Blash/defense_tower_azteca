@@ -1,5 +1,5 @@
 // src/three/entities/tower/core/EnemyManager.js
-import { EventDispatcher } from 'three';
+import { EventDispatcher, Vector3 } from 'three';
 
 export default class EnemyManager extends EventDispatcher {
     constructor(scene) {
@@ -7,11 +7,17 @@ export default class EnemyManager extends EventDispatcher {
         this.scene = scene;
         this.enemies = new Map();
         this.enemyCount = 0;
+
+        this.spawnPoint = new Vector3(0, 0, 0);
+        this.waypoints = [];
+        this.goal = null;
     }
 
-    createEnemy(EnemyClass, position, config = {}) {
+    createEnemy(EnemyClass, config = {}) {
         const enemy = new EnemyClass(config);
-        enemy.position.copy(position);
+        
+        enemy.position.copy(this.spawnPoint);
+        enemy.setPath(this.waypoints, this.goal);
 
         // Añadir a la escena
         this.scene.add(enemy);
@@ -73,6 +79,29 @@ export default class EnemyManager extends EventDispatcher {
                 removedIds: enemiesToRemove
             });
         }
+    }
+
+    /**
+     * Establece el camino para los enemigos.
+     * @param {Array} waypoints - Lista de waypoints.
+     * @param {Object3D} goal - Meta final.
+     */
+    setPath(waypoints = [], goal) {
+        this.waypoints = waypoints.map(wp => wp.position.clone());
+        this.goal = goal;
+
+        if (waypoints.length > 0) {
+            this.spawnPoint.copy(waypoints[0].position);
+        }
+    }
+
+    /**
+     * Obtiene un enemigo por su ID.
+     * @param {string} enemyId - ID del enemigo.
+     * @returns {Enemy | undefined} - Enemigo encontrado o undefined si no se encuentra.
+     */
+    getEnemyById(enemyId) {
+        return this.enemies.get(enemyId);
     }
 
     getAllEnemies() {

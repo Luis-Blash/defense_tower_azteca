@@ -1,4 +1,4 @@
-import { Mesh, MeshBasicMaterial, Object3D, SphereGeometry } from "three";
+import { Mesh, MeshBasicMaterial, Object3D, SphereGeometry, Vector3 } from "three";
 
 export default class Enemy extends Object3D {
     /**
@@ -31,6 +31,20 @@ export default class Enemy extends Object3D {
         this.speed = speed;
         this.active = true;
         this.shouldRemove = false;
+
+        // Estado del movimiento
+        this.path = [];
+        this.currentWaypointIndex = 0;
+        this.distanceToGoal = 0;
+        this.totalPathDistance = 0;
+        this.hasReachedGoal = false;
+
+        this.goalPosition = new Vector3();
+        this.waypointThreshold = 0.1;
+
+        // Movimiento
+        this.velocity = new Vector3();
+        this.targetPosition = new Vector3();
     }
 
     debugMesh(debug = false) {
@@ -45,8 +59,22 @@ export default class Enemy extends Object3D {
         if (debug) this.add(sphere);
     }
 
+    setPath(waypoints, goal) {
+        // waypoints = [Vector3, Vector3, Vector3]
+        // goal = Object3D
+        this.path = [...waypoints];
+        this.goalPosition.copy(goal.position);
+
+        if (this.path.length > 0) {
+            this.position.copy(this.path[0]);
+            this.currentWaypointIndex = 0;
+
+            this.targetPosition.copy(this.path[this.currentWaypointIndex]);
+        }
+    }
+
     takeDamage(damage) {
-        console.log(this.name, 'takeDamage', damage);
+        console.log('takeDamage', damage);
         this.life -= damage;
         if (this.life <= 0) {
             this.die();
@@ -55,23 +83,64 @@ export default class Enemy extends Object3D {
 
     die() {
         this.active = false;
-        this.shouldRemove = true;
+    }
+
+    // Implementar el método moveTowardsTarget:
+    moveTowardsTarget(target, moveDistance) {
+        const direction = new Vector3();
+        direction.subVectors(target, this.position);
+        const distanceToTarget = direction.length();
+
+        // Si estamos muy cerca O si el movimiento nos llevaría más allá del target
+        if (distanceToTarget <= this.waypointThreshold || distanceToTarget <= moveDistance) {
+            this.position.copy(target);
+            return true;
+        }
+
+        direction.normalize();
+        direction.multiplyScalar(moveDistance);
+        this.position.add(direction);
+
+        return false; // No hemos llegado aún
+    }
+
+    // Implementar el método move:
+    move(delta) {
+        if (this.hasReachedGoal || !this.active || this.path.length === 0) return;
+
+        const moveDistance = this.speed * delta;
+
+        // Si estamos siguiendo waypoints
+        if (this.currentWaypointIndex < this.path.length) {
+            this.targetPosition.copy(this.path[this.currentWaypointIndex]);
+
+            // Moverse hacia el waypoint actual
+            const reachedWaypoint = this.moveTowardsTarget(this.targetPosition, moveDistance);
+
+            if (reachedWaypoint) {
+                // Avanzar al siguiente waypoint
+                this.currentWaypointIndex++;
+
+                // Si hemos completado todos los waypoints, ir al goal
+                if (this.currentWaypointIndex >= this.path.length) {
+                    this.targetPosition.copy(this.goalPosition);
+                }
+            }
+        } else {
+            // Ir hacia el goal final
+            const reachedGoal = this.moveTowardsTarget(this.goalPosition, moveDistance);
+
+            if (reachedGoal) {
+                this.hasReachedGoal = true;
+                console.log('Enemy ha llegado al goal!');
+            }
+        }
     }
 
     update(delta) {
-        if (!this.active) return;
+        if (!this.active || this.hasReachedGoal) return;
 
-        this.position.x += this.speed * delta;
-
-        // Verificar si debe morir por vida
-        if (this.life <= 0 && !this.shouldRemove) {
-            this.die();
-        }
-
-        // Verificar límites del mapa (opcional)
-        if (this.position.x < -20 || this.position.x > 20) {
-            this.shouldRemove = true;
-        }
+        this.move(delta);
     }
 
     dispose() {
