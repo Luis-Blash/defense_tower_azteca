@@ -11,24 +11,31 @@ export default class Waypoint extends Object3D {
     constructor(position, config = {}) {
         super();
         
-        this.waypointId = config.id || Math.random().toString(36).substr(2, 9);
+        const {
+            id = Math.random().toString(36).substr(2, 9),
+            name = 'Waypoint',
+            debug = false,
+        } = config
+        
+        this.name = name;
+        this.waypointId = id;
         this.nextWaypoint = null;
-        this.debug = config.debug || false;
         
         this.position.copy(position);
         
-        if (this.debug) this.createVisualRepresentation();
+        this.createVisualRepresentation(debug);
     }
     
-    createVisualRepresentation() {
+    createVisualRepresentation(debug) {
         const geometry = new SphereGeometry(0.5, 6, 4);
         const material = new MeshBasicMaterial({ 
             color: 0x00fff0,
             transparent: true,
-            opacity: 0.2,
+            opacity: debug ? 1 : 0,
             wireframe: true
         });        
         this.mesh = new Mesh(geometry, material);
+        this.mesh.name = `${this.name}`;
         this.add(this.mesh);
     }
     

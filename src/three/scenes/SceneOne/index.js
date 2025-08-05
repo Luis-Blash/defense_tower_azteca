@@ -5,6 +5,8 @@ const Activities = {
 	1: ActityOne
 }
 
+// MouseEvent
+import MouseEvents from "@three/entities/system/MouseEvent/MouseEvents";
 // Entities
 import MapScene from "@three/entities/map/core/MapScene";
 
@@ -13,12 +15,11 @@ export default class SceneOne extends Scene {
 	// configApp { loadingManager, camera, hdri }, sceneParams lo que le pases
 	constructor(configApp, sceneParams) {
 		super();
-		console.log('init scene paramsExtra', sceneParams);
 
 		this.camera = configApp.camera;
 		this.loadingManager = configApp.loadingManager;
 		this.environment = configApp.hdri;
-		this.render = configApp.render
+		this.render = configApp.renderer
 		this.container = configApp.container
 		this.transformControlsHelper = configApp.transformControlsHelper
 
@@ -41,6 +42,7 @@ export default class SceneOne extends Scene {
 		this.camera.orbit.controls.enablePan = true
 		this.camera.orbit.controls.enableRotate = true
 
+		this.mouseEvents = new MouseEvents(this.camera, this.container, this.render, this);
 		this.map = new MapScene({
 			width: 40,
 			height: 30,
@@ -49,12 +51,6 @@ export default class SceneOne extends Scene {
 		})
 		this.map.position.set(0, -2, 0)
 		this.add(this.map)
-
-	}
-
-	reActiveScene(sceneParams = { activity: 0 }) {
-		this.currentActivity = this.mapScene.get(sceneParams.activity)
-		this.currentActivity.reActiveScene()
 	}
 
 	configScene() {
@@ -64,10 +60,16 @@ export default class SceneOne extends Scene {
 		this.add(this.ambient)
 	}
 
+	reActiveScene(sceneParams = { activity: 0 }) {
+		this.currentActivity = this.mapScene.get(sceneParams.activity)
+		this.currentActivity.reActiveScene()
+	}
+
 	activitys(activity) {
 		if (!Activities[activity]) return
 		this.currentActivity = new Activities[activity](this.camera, this)
 		this.mapScene.set(activity, this.currentActivity)
+
 	}
 
 	renderAnimations(delta) {

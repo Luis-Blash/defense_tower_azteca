@@ -6,6 +6,7 @@ export default class Enemy extends Object3D {
     /**
      * Crea una nueva Enemigo.
      * @param {Object} config - Configuración inicial de la Enemigo.
+     * @param {string} [config.name='Enemy'] - Nombre de la Enemigo.
      * @param {number} [config.life=100] - Vida de la Enemigo.
      * @param {number} [config.maxLife=100] - Vida máxima de la Enemigo.
      * @param {number} [config.speed=1] - Velocidad de la Enemigo.
@@ -15,12 +16,14 @@ export default class Enemy extends Object3D {
         super()
 
         const {
+            name = 'Enemy',
             life = 100,
             maxLife = 100,
             speed = 1,
             debug = false,
         } = config
 
+        this.name = name
         this.active = true;
         this.hasReachedGoal = false;
         this.healthComponent = new HealthComponent({ life, maxLife })
@@ -33,11 +36,12 @@ export default class Enemy extends Object3D {
         const material = new MeshBasicMaterial({
             color: 0xffff00,
             transparent: true,
-            opacity: 0.2,
+            opacity: debug ? 1 : 0,
             wireframe: true
         });
         const sphere = new Mesh(geometry, material);
-        if (debug) this.add(sphere);
+        sphere.name = `${this.name}`;
+        this.add(sphere);
     }
 
     setPath(waypoints, goal) {

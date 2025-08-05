@@ -4,14 +4,16 @@ import ObserverEmitter, { EVENTS } from '@services/Observer';
 import { getSceneClass } from '@three/scenes';
 
 export default class SceneLoaderManager {
-	constructor({ camera = null, hdri, transformControlsHelper }) {
+	constructor({ camera = null, hdri, transformControlsHelper, renderer, container }) {
 		this.loadingManager = new LoadingManager();
 
 		this.configApp = {
-			loadingManager: this.loadingManager,
 			camera: camera,
+			loadingManager: this.loadingManager,
 			hdri: hdri,
-			transformControlsHelper: transformControlsHelper
+			renderer: renderer,
+			container: container,
+			transformControlsHelper: transformControlsHelper,
 		}
 	}
 

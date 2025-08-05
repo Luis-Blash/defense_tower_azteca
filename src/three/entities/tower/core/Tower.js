@@ -7,6 +7,7 @@ export default class Tower extends Object3D {
     /**
      * Crea una nueva torre.
      * @param {Object} config - Configuración inicial de la torre.
+     * @param {string} [config.name='Tower'] - Nombre de la torre.
      * @param {number} [config.life=100] - Vida de la torre.
      * @param {number} [config.maxLife=100] - Vida máxima de la torre.
      * @param {number} [config.damage=10] - Daño que causa la torre.
@@ -33,6 +34,7 @@ export default class Tower extends Object3D {
 
     statsTower(config = {}) {
         const {
+            name = 'Tower',
             life = 100,
             maxLife = 100,
             damage = 10,
@@ -41,6 +43,7 @@ export default class Tower extends Object3D {
             cost = 100,
         } = config;
 
+        this.name = name
         this.life = life;
         this.maxLife = maxLife;
         this.cost = cost;
@@ -56,11 +59,12 @@ export default class Tower extends Object3D {
         const material = new MeshBasicMaterial({
             color: 0x00ff00,
             transparent: true,
-            opacity: 0.2,
+            opacity: debug ? 1 : 0,
             wireframe: true
         });
         const cube = new Mesh(geometry, material);
-        if (debug) this.add(cube);
+        cube.name = `${this.name}`;
+        this.add(cube);
         this.add(this.collision.getVisualRange());
     }
 

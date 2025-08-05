@@ -14,7 +14,7 @@ export default class ActityOne {
     constructor(camera, scene) {
         this.camera = camera
         this.scene = scene
-
+        this.mouseEvents = scene.mouseEvents
         this.init()
     }
 
@@ -30,10 +30,8 @@ export default class ActityOne {
         this.setupWaypoints()
         this.configureWavesNivel()
         this.setNextWave()
+        this.configMouseClickManager()
 
-        // const objectToGui = this.towerManager.getTowerById("tower_0")
-        // this.scene.transformControlsHelper.addMesh(objectToGui, this.scene);
-        // meshListGui(objectToGui)
     }
 
     setupWaypoints() {
@@ -87,6 +85,27 @@ export default class ActityOne {
     setNextWave() {
         this.enemyManager.setNextWave()
     }
+
+    configMouseClickManager() {
+		this.mouseEvents.setClickObject("MapScene")
+		this.mouseEvents.setCallBackIntersect(({intersects, objectClickByName}) => {
+			const intersection = intersects[0];
+            const clickedObject = intersection.object;
+            console.log(clickedObject)
+            if (objectClickByName.includes(clickedObject.name)) {
+                // Punto exacto donde se hizo clic en coordenadas del mundo
+                const clickPoint = intersection.point;
+
+                // Información adicional del punto de intersección
+                console.log('Objeto clickeado:', clickedObject.name);
+                console.log('Punto de clic (mundo):', clickPoint);
+                console.log('Distancia desde la cámara:', intersection.distance);
+                // Si quieres las coordenadas locales del objeto
+                const localPoint = clickedObject.worldToLocal(clickPoint.clone());
+                console.log('Punto de clic (local):', localPoint);
+            }
+		})
+	}
 
     reActiveScene() {
     }

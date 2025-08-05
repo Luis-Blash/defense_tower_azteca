@@ -54,7 +54,9 @@ export default class APPThree {
             this.sceneLoaderManager = new SceneLoaderManager({
                 camera: this.cameraManager.getCamera(),
                 hdri: this.hdri.environmentToScenes,
-                transformControlsHelper: this.transformControlsHelper
+                renderer: this.rendererManager.getRenderer(),
+                container: this.container,
+                transformControlsHelper: this.transformControlsHelper,
             })
 
             //? maneja el cambio de scena nada mas

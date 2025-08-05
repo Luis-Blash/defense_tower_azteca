@@ -5,6 +5,7 @@ export default class MapScene extends Object3D {
     /**
      * Crea una nueva Mapa.
      * @param {Object} config - Configuración inicial de la Mapa.
+     * @param {string} [config.name='MapScene'] - Nombre de la Mapa.
      * @param {number} [config.width=10] - Ancho de la Mapa.
      * @param {number} [config.height=10] - Altura de la Mapa.
      * @param {number} [config.depth=10] - Profundidad de la Mapa.
@@ -13,11 +14,20 @@ export default class MapScene extends Object3D {
     constructor(config = {}) {
         super();
 
-        this.width = config.width || 10;
-        this.height = config.height || 10;
-        this.depth = config.depth || 10;
+        const {
+            name = 'MapScene',
+            width = 10,
+            height = 10,
+            depth = 10,
+            debug = false,
+        } = config
 
-       this.debugMesh(config.debug)
+        this.name = name
+        this.width = width;
+        this.height = height;
+        this.depth = depth;
+
+       this.debugMesh(debug)
 
     }
 
@@ -26,10 +36,11 @@ export default class MapScene extends Object3D {
         const material = new MeshBasicMaterial({ 
             color: 0x00ff00,
             transparent: true, 
-            opacity: 0.2,
+            opacity: debug ? 1 : 0,
             wireframe: true
         });
         const cube = new Mesh(geometry, material);
-        if(debug) this.add(cube);
+        cube.name = `${this.name}`;
+        this.add(cube);
     }
 }
