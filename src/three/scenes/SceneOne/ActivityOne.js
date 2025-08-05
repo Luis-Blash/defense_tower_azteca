@@ -21,6 +21,7 @@ export default class ActityOne {
     init() {
         this.pyramid = new Pyramid({
             position: new Vector3(-18.1215, 0, 0),
+            debug: true,
         });
         this.scene.add(this.pyramid);
 
@@ -91,18 +92,17 @@ export default class ActityOne {
 		this.mouseEvents.setCallBackIntersect(({intersects, objectClickByName}) => {
 			const intersection = intersects[0];
             const clickedObject = intersection.object;
-            console.log(clickedObject)
-            if (objectClickByName.includes(clickedObject.name)) {
-                // Punto exacto donde se hizo clic en coordenadas del mundo
-                const clickPoint = intersection.point;
 
-                // Información adicional del punto de intersección
-                console.log('Objeto clickeado:', clickedObject.name);
-                console.log('Punto de clic (mundo):', clickPoint);
-                console.log('Distancia desde la cámara:', intersection.distance);
-                // Si quieres las coordenadas locales del objeto
-                const localPoint = clickedObject.worldToLocal(clickPoint.clone());
-                console.log('Punto de clic (local):', localPoint);
+            if (objectClickByName.includes(clickedObject.name)) {
+                const clickPoint = intersection.point;
+                
+                this.towerManager.createTower(
+                    Tower, 
+                    new Vector3(clickPoint.x, 0, clickPoint.z),
+                    {
+                        debug: true,
+                    }
+                )
             }
 		})
 	}

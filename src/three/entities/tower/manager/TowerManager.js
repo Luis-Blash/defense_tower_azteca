@@ -9,6 +9,12 @@ export default class TowerManager extends EventDispatcher {
         this.towerCount = 0;
     }
     
+    /**
+     * Crea una nueva torre.
+     * @param {Object} TowerClass - Clase de la torre.
+     * @param {Vector3} position - Posición de la torre.
+     * @param {Object} [config={}] - Configuración de la torre.
+     */
     createTower(TowerClass, position, config = {}) {
         const tower = new TowerClass(config);
         tower.position.copy(position);

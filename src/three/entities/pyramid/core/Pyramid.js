@@ -9,6 +9,7 @@ export default class Pyramid extends Object3D {
      * @param {Object} config - Configuración inicial de la Pirámide.
      * @param {string} [config.name='Pyramid'] - Nombre de la Pirámide.
      * @param {Vector3} [config.position=new Vector3(0, 0, 0)] - Posición de la Pirámide.
+     * @param {boolean} [config.debug=false] - Debug de la Pirámide.
      */
     constructor(config = {}) {
         super();

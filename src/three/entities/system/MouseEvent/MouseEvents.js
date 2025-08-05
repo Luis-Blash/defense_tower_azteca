@@ -13,30 +13,86 @@ export default class MouseEvents {
         this.objectClickByName = []
         this.callBackIntersect = () => {}
 
+        // Variables para detectar drag vs click
+        this.isMouseDown = false;
+        this.mouseDownPosition = new Vector2();
+        this.dragThreshold = 5; // píxeles - ajusta según necesites
+
         this.init();
     }
 
     init() {
-        // Eventos para desktop
-        this.container.addEventListener('click', this.onMouseClick.bind(this));
+        // Eventos para detectar drag vs click
+        this.container.addEventListener('mousedown', this.onMouseDown.bind(this));
+        this.container.addEventListener('mouseup', this.onMouseUp.bind(this));
+        this.container.addEventListener('mousemove', this.onMouseMove.bind(this));
         
-        // Eventos para móviles - mejor respuesta táctil
-        this.container.addEventListener('touchend', this.onTouchEnd.bind(this));
-        
-        // Prevenir el zoom en doble tap (opcional)
+        // Eventos para móviles
         this.container.addEventListener('touchstart', this.onTouchStart.bind(this), { passive: false });
+        this.container.addEventListener('touchend', this.onTouchEnd.bind(this));
+        this.container.addEventListener('touchmove', this.onTouchMove.bind(this), { passive: false });
     }
 
+    onMouseDown(event) {
+        this.isMouseDown = true;
+        this.mouseDownPosition.set(event.clientX, event.clientY);
+    }
+
+    onMouseMove(event) {
+        // Si está arrastrando, marcar como drag
+        if (this.isMouseDown) {
+            const currentPos = new Vector2(event.clientX, event.clientY);
+            const distance = this.mouseDownPosition.distanceTo(currentPos);
+            
+            if (distance > this.dragThreshold) {
+                this.isDragging = true;
+            }
+        }
+    }
+
+    onMouseUp(event) {
+        // Solo procesar click si no fue un drag
+        if (this.isMouseDown && !this.isDragging) {
+            const intersects = this.configMouse(event);
+            
+            if (intersects.length > 0) {
+                this.callBackIntersect({intersects, objectClickByName: this.objectClickByName});
+            }
+        }
+        
+        // Reset variables
+        this.isMouseDown = false;
+        this.isDragging = false;
+    }
+
+    // Para móviles - mismo concepto
     onTouchStart(event) {
-        // Prevenir comportamientos por defecto como zoom en doble tap
+        if (event.touches.length === 1) {
+            this.isMouseDown = true;
+            const touch = event.touches[0];
+            this.mouseDownPosition.set(touch.clientX, touch.clientY);
+            this.isDragging = false;
+        }
+        
         if (event.touches.length > 1) {
             event.preventDefault();
         }
     }
 
+    onTouchMove(event) {
+        if (this.isMouseDown && event.touches.length === 1) {
+            const touch = event.touches[0];
+            const currentPos = new Vector2(touch.clientX, touch.clientY);
+            const distance = this.mouseDownPosition.distanceTo(currentPos);
+            
+            if (distance > this.dragThreshold) {
+                this.isDragging = true;
+            }
+        }
+    }
+
     onTouchEnd(event) {
-        // Solo procesar si es un toque simple (no multi-touch)
-        if (event.changedTouches.length === 1) {
+        if (event.changedTouches.length === 1 && this.isMouseDown && !this.isDragging) {
             const touch = event.changedTouches[0];
             const intersects = this.configTouch(touch);
             
@@ -45,7 +101,9 @@ export default class MouseEvents {
             }
         }
         
-        // Prevenir que se dispare también el evento click
+        // Reset variables
+        this.isMouseDown = false;
+        this.isDragging = false;
         event.preventDefault();
     }
 
@@ -69,14 +127,6 @@ export default class MouseEvents {
         return intersects;
     }
 
-    onMouseClick(event) {
-        const intersects = this.configMouse(event);
-
-        if (intersects.length > 0) {
-            this.callBackIntersect({intersects, objectClickByName: this.objectClickByName});
-        }
-    }
-
     setClickObject(object) {
         this.objectClickByName.push(object);
     }
@@ -85,10 +135,18 @@ export default class MouseEvents {
         this.callBackIntersect = callBack;
     }
 
+    // Método para ajustar la sensibilidad del drag
+    setDragThreshold(pixels) {
+        this.dragThreshold = pixels;
+    }
+
     dispose() {
         this.objectClickByName = [];
-        this.container.removeEventListener('click', this.onMouseClick.bind(this));
-        this.container.removeEventListener('touchend', this.onTouchEnd.bind(this));
+        this.container.removeEventListener('mousedown', this.onMouseDown.bind(this));
+        this.container.removeEventListener('mouseup', this.onMouseUp.bind(this));
+        this.container.removeEventListener('mousemove', this.onMouseMove.bind(this));
         this.container.removeEventListener('touchstart', this.onTouchStart.bind(this));
+        this.container.removeEventListener('touchend', this.onTouchEnd.bind(this));
+        this.container.removeEventListener('touchmove', this.onTouchMove.bind(this));
     }
 }
