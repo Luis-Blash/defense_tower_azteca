@@ -16,6 +16,7 @@ export default class TowerCollision {
             wireframe: true
         });
         this.rangeMesh = new Mesh(this.rangeGeometry, this.rangeMaterial);
+        this.rangeMesh.name = "TowerCollision";
         this.rangeMesh.visible = debug; // Oculto por defecto
     }
     

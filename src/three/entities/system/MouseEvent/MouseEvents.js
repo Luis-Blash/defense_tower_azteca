@@ -10,13 +10,15 @@ export default class MouseEvents {
         this.raycaster = new Raycaster();
         this.mouse = new Vector2();
 
+        this.layerIntersect = 1;
         this.objectClickByName = []
-        this.callBackIntersect = () => {}
+        this.ignoreObjectsByName = []
+        this.callBackIntersect = () => { }
 
         // Variables para detectar drag vs click
         this.isMouseDown = false;
         this.mouseDownPosition = new Vector2();
-        this.dragThreshold = 5; // píxeles - ajusta según necesites
+        this.dragThreshold = 5;
 
         this.init();
     }
@@ -26,7 +28,7 @@ export default class MouseEvents {
         this.container.addEventListener('mousedown', this.onMouseDown.bind(this));
         this.container.addEventListener('mouseup', this.onMouseUp.bind(this));
         this.container.addEventListener('mousemove', this.onMouseMove.bind(this));
-        
+
         // Eventos para móviles
         this.container.addEventListener('touchstart', this.onTouchStart.bind(this), { passive: false });
         this.container.addEventListener('touchend', this.onTouchEnd.bind(this));
@@ -39,11 +41,10 @@ export default class MouseEvents {
     }
 
     onMouseMove(event) {
-        // Si está arrastrando, marcar como drag
         if (this.isMouseDown) {
             const currentPos = new Vector2(event.clientX, event.clientY);
             const distance = this.mouseDownPosition.distanceTo(currentPos);
-            
+
             if (distance > this.dragThreshold) {
                 this.isDragging = true;
             }
@@ -51,21 +52,18 @@ export default class MouseEvents {
     }
 
     onMouseUp(event) {
-        // Solo procesar click si no fue un drag
         if (this.isMouseDown && !this.isDragging) {
             const intersects = this.configMouse(event);
-            
+
             if (intersects.length > 0) {
-                this.callBackIntersect({intersects, objectClickByName: this.objectClickByName});
+                this.callBackIntersect({ intersects, objectClickByName: this.objectClickByName });
             }
         }
-        
-        // Reset variables
+
         this.isMouseDown = false;
         this.isDragging = false;
     }
 
-    // Para móviles - mismo concepto
     onTouchStart(event) {
         if (event.touches.length === 1) {
             this.isMouseDown = true;
@@ -73,7 +71,7 @@ export default class MouseEvents {
             this.mouseDownPosition.set(touch.clientX, touch.clientY);
             this.isDragging = false;
         }
-        
+
         if (event.touches.length > 1) {
             event.preventDefault();
         }
@@ -84,7 +82,7 @@ export default class MouseEvents {
             const touch = event.touches[0];
             const currentPos = new Vector2(touch.clientX, touch.clientY);
             const distance = this.mouseDownPosition.distanceTo(currentPos);
-            
+
             if (distance > this.dragThreshold) {
                 this.isDragging = true;
             }
@@ -95,16 +93,30 @@ export default class MouseEvents {
         if (event.changedTouches.length === 1 && this.isMouseDown && !this.isDragging) {
             const touch = event.changedTouches[0];
             const intersects = this.configTouch(touch);
-            
+
             if (intersects.length > 0) {
-                this.callBackIntersect({intersects, objectClickByName: this.objectClickByName});
+                this.callBackIntersect({ intersects, objectClickByName: this.objectClickByName });
             }
         }
-        
-        // Reset variables
+
         this.isMouseDown = false;
         this.isDragging = false;
         event.preventDefault();
+    }
+
+    setLayerIntersect(layer) {
+        this.layerIntersect = layer;
+    }
+
+    setIntersectObject() {
+        this.raycaster.setFromCamera(this.mouse, this.camera);
+        const allIntersects = this.raycaster.intersectObjects(this.scene.children, true);
+
+        const intersects = allIntersects.filter(intersection => {
+            return !this.ignoreObjectsByName.includes(intersection.object.name);
+        });
+
+        return intersects;
     }
 
     configMouse(event) {
@@ -112,9 +124,7 @@ export default class MouseEvents {
         this.mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
         this.mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
-        this.raycaster.setFromCamera(this.mouse, this.camera);
-        const intersects = this.raycaster.intersectObjects(this.scene.children, true);
-        return intersects;
+        return this.setIntersectObject();
     }
 
     configTouch(touch) {
@@ -122,9 +132,7 @@ export default class MouseEvents {
         this.mouse.x = ((touch.clientX - rect.left) / rect.width) * 2 - 1;
         this.mouse.y = -((touch.clientY - rect.top) / rect.height) * 2 + 1;
 
-        this.raycaster.setFromCamera(this.mouse, this.camera);
-        const intersects = this.raycaster.intersectObjects(this.scene.children, true);
-        return intersects;
+        return this.setIntersectObject();
     }
 
     setClickObject(object) {
@@ -135,13 +143,19 @@ export default class MouseEvents {
         this.callBackIntersect = callBack;
     }
 
-    // Método para ajustar la sensibilidad del drag
     setDragThreshold(pixels) {
         this.dragThreshold = pixels;
     }
 
+    setIgnoreObject(objectName) {
+        if (!this.ignoreObjectsByName.includes(objectName)) {
+            this.ignoreObjectsByName.push(objectName);
+        }
+    }
+
     dispose() {
         this.objectClickByName = [];
+        this.ignoreObjectsByName = [];
         this.container.removeEventListener('mousedown', this.onMouseDown.bind(this));
         this.container.removeEventListener('mouseup', this.onMouseUp.bind(this));
         this.container.removeEventListener('mousemove', this.onMouseMove.bind(this));

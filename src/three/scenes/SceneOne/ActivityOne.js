@@ -89,6 +89,8 @@ export default class ActityOne {
 
     configMouseClickManager() {
 		this.mouseEvents.setClickObject("MapScene")
+		this.mouseEvents.setIgnoreObject("TowerCollision")
+		this.mouseEvents.setIgnoreObject("Waypoint")
 		this.mouseEvents.setCallBackIntersect(({intersects, objectClickByName}) => {
 			const intersection = intersects[0];
             const clickedObject = intersection.object;
