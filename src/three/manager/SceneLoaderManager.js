@@ -18,7 +18,7 @@ export default class SceneLoaderManager {
 	}
 
 	loadScene({ sceneName, sceneParams, callback }) {
-		console.log(' --- Loading new scene ---');
+		// console.log(' --- Loading new scene ---');
 
 		//? Aqui le pasas los props a cada scena que se carga
 		const SceneClass = getSceneClass(sceneName);
@@ -33,13 +33,13 @@ export default class SceneLoaderManager {
 		};
 
 		this.loadingManager.onLoad = () => {
-			console.log('-- loading complete ---');
+			// console.log('-- loading complete ---');
 			ObserverEmitter.emit(EVENTS.loader3D.onLoad);
 			callback(sceneInstance)
 		};
 
 		//! SI DESDE UN INICIO NECESITA EL LOADER AGREGA ESTA PARTE A ONLOAD DEL LOADER
-		callback(sceneInstance)
-		ObserverEmitter.emit(EVENTS.loader3D.onLoad);
+		// callback(sceneInstance)
+		// ObserverEmitter.emit(EVENTS.loader3D.onLoad);
 	}
 }

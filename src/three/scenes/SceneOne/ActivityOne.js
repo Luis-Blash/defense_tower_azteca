@@ -71,6 +71,7 @@ export default class ActityOne {
                             debug: true,
                             speed: 5,
                             life: 40,
+                            model: this.scene.enemyTest,
                         }
                     },
                     {
@@ -79,6 +80,7 @@ export default class ActityOne {
                             debug: true,
                             speed: 8,
                             life: 60,
+                            model: this.scene.enemyTest,
                         }
                     }
                 ]
@@ -95,6 +97,7 @@ export default class ActityOne {
         this.mouseEvents.setClickObject("MapScene")
         this.mouseEvents.setIgnoreObject("TowerCollision")
         this.mouseEvents.setIgnoreObject("Waypoint")
+        this.mouseEvents.setIgnoreObject("Cube")// Asi se llama el objeto Modelo
         this.mouseEvents.setCallBackIntersect(({ intersects, objectClickByName }) => {
             const intersection = intersects[0];
             const clickedObject = intersection.object;

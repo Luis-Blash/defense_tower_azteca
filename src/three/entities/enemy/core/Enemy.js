@@ -21,11 +21,17 @@ export default class Enemy extends Object3D {
             maxLife = 100,
             speed = 1,
             debug = false,
+            model = null,
         } = config
 
         this.name = name
         this.active = true;
         this.hasReachedGoal = false;
+        if (model) {
+            const modelClone = model.clone()            
+            this.model = modelClone
+            this.add(modelClone)
+        }
         this.healthComponent = new HealthComponent({ life, maxLife })
         this.enemyWaypoint = new EnemyWaypoint(this, { speed })
         this.debugMesh(debug)

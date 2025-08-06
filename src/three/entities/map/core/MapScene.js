@@ -10,6 +10,7 @@ export default class MapScene extends Object3D {
      * @param {number} [config.height=10] - Altura de la Mapa.
      * @param {number} [config.depth=10] - Profundidad de la Mapa.
      * @param {boolean} [config.debug=false] - Debug de la Mapa.
+     * @param {Object} [config.model=null] - Modelo de la Mapa.
      */
     constructor(config = {}) {
         super();
@@ -20,12 +21,19 @@ export default class MapScene extends Object3D {
             height = 10,
             depth = 10,
             debug = false,
+            model = null,
         } = config
 
         this.name = name
         this.width = width;
         this.height = height;
         this.depth = depth;
+
+        if (model) {
+            const modelClone = model.clone()
+            this.model = modelClone
+            this.add(modelClone)
+        }
 
        this.debugMesh(debug)
 

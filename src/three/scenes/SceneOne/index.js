@@ -9,6 +9,8 @@ const Activities = {
 import MouseEvents from "@three/entities/system/MouseEvent/MouseEvents";
 // Entities
 import MapScene from "@three/entities/map/core/MapScene";
+import EnemyTest from "@three/entities/enemy/models/EnemyTest";
+import BaseTest from "@three/entities/map/models/BaseTest";
 
 
 export default class SceneOne extends Scene {
@@ -42,12 +44,17 @@ export default class SceneOne extends Scene {
 		this.camera.orbit.controls.enablePan = true
 		this.camera.orbit.controls.enableRotate = true
 
+		// Modelos
+		this.enemyTest = new EnemyTest({ loadingManager: this.loadingManager })
+		this.baseTest = new BaseTest({ loadingManager: this.loadingManager })
+
 		this.mouseEvents = new MouseEvents(this.camera, this.container, this.render, this);
 		this.map = new MapScene({
-			width: 40,
-			height: 30,
-			depth: 1,
-			debug: true
+			width: 40, // X
+			height: 30, // Y
+			depth: 1, // Z
+			debug: true,
+			model: this.baseTest
 		})
 		this.map.position.set(0, -2, 0)
 		this.add(this.map)
