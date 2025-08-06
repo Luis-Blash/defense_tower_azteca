@@ -23,6 +23,7 @@ export default class ActityOne {
             position: new Vector3(-18.1215, 0, 0),
             debug: true,
         });
+        this.pyramid.scale.set(5.9203, 2.6462, 10.4581)
         this.scene.add(this.pyramid);
 
         this.towerManager = new TowerManager(this.scene, this.scene.loadingManager);
@@ -32,6 +33,9 @@ export default class ActityOne {
         this.configureWavesNivel()
         this.setNextWave()
         this.configMouseClickManager()
+
+        // this.scene.transformControlsHelper.addMesh(this.pyramid, this.scene)
+        // meshListGui(this.pyramid)
 
     }
 
@@ -88,26 +92,25 @@ export default class ActityOne {
     }
 
     configMouseClickManager() {
-		this.mouseEvents.setClickObject("MapScene")
-		this.mouseEvents.setIgnoreObject("TowerCollision")
-		this.mouseEvents.setIgnoreObject("Waypoint")
-		this.mouseEvents.setCallBackIntersect(({intersects, objectClickByName}) => {
-			const intersection = intersects[0];
+        this.mouseEvents.setClickObject("MapScene")
+        this.mouseEvents.setIgnoreObject("TowerCollision")
+        this.mouseEvents.setIgnoreObject("Waypoint")
+        this.mouseEvents.setCallBackIntersect(({ intersects, objectClickByName }) => {
+            const intersection = intersects[0];
             const clickedObject = intersection.object;
 
             if (objectClickByName.includes(clickedObject.name)) {
                 const clickPoint = intersection.point;
-                
                 this.towerManager.createTower(
-                    Tower, 
+                    Tower,
                     new Vector3(clickPoint.x, 0, clickPoint.z),
                     {
                         debug: true,
                     }
                 )
             }
-		})
-	}
+        })
+    }
 
     reActiveScene() {
     }

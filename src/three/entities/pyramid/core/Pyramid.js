@@ -1,4 +1,4 @@
-import { Mesh, MeshBasicMaterial, Object3D, TetrahedronGeometry, Vector3 } from "three";
+import { BoxGeometry, Mesh, MeshBasicMaterial, Object3D,  Vector3 } from "three";
 
 
 
@@ -26,9 +26,9 @@ export default class Pyramid extends Object3D {
     }
 
     createPyramid(debug) {
-        const geometry = new TetrahedronGeometry(1, 1);
+        const geometry = new BoxGeometry(1, 1, 1);
         const material = new MeshBasicMaterial({
-            color: 0x00ff00,
+            color: 0xcc0000,
             transparent: true,
             opacity: debug ? 1 : 0,
             wireframe: true

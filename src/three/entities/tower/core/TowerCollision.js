@@ -5,19 +5,21 @@ export default class TowerCollision {
     constructor(tower, range, debug = false) {
         this.tower = tower;
         this.range = range;
-        this.sphere = new Sphere(tower.position, range);
         
-        // Representación visual del rango (opcional, para debug)
-        this.rangeGeometry = new SphereGeometry(range, 16, 8);
+       this.createVisualRange(debug)
+    }
+
+    createVisualRange(debug) {
+        this.sphere = new Sphere(this.tower.position, this.range);
+        this.rangeGeometry = new SphereGeometry(this.range, 16, 8);
         this.rangeMaterial = new MeshBasicMaterial({ 
             color: 0xff0000, 
             transparent: true, 
-            opacity: 0.2,
+            opacity: debug ? 1 : 0,
             wireframe: true
         });
         this.rangeMesh = new Mesh(this.rangeGeometry, this.rangeMaterial);
         this.rangeMesh.name = "TowerCollision";
-        this.rangeMesh.visible = debug; // Oculto por defecto
     }
     
     getEnemiesInRange(enemies) {

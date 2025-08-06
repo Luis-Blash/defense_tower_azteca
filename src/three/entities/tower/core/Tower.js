@@ -19,20 +19,7 @@ export default class Tower extends Object3D {
     constructor(config = {}) {
         super();
 
-        this.statsTower(config)
-        // Sistema de colisión
-        this.collision = new TowerCollision(this, this.range, config.debug);
-        // Sistema de ataque
-        this.attack = new TowerAttack(this, {
-            fireRate: this.fireRate,
-            damage: this.damage
-        });
-        // Debug
-        this.configDebugTower(config.debug);
 
-    }
-
-    statsTower(config = {}) {
         const {
             name = 'Tower',
             life = 100,
@@ -41,17 +28,25 @@ export default class Tower extends Object3D {
             range = 5,
             fireRate = 1,
             cost = 100,
-        } = config;
-
+            debug = false,
+            isActive = true
+        } = config
         this.name = name
         this.life = life;
         this.maxLife = maxLife;
         this.cost = cost;
-        this.range = range;
-        this.isActive = true;
-        this.fireRate = fireRate;
-        this.damage = damage;
-        this.model = null;
+        this.isActive = isActive;
+
+        // Sistema de colisión
+        this.collision = new TowerCollision(this, range, debug);
+        // Sistema de ataque
+        this.attack = new TowerAttack(this, {
+            fireRate,
+            damage
+        });
+        // Debug
+        this.configDebugTower(debug);
+
     }
 
     configDebugTower(debug) {
