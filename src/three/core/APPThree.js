@@ -1,10 +1,10 @@
 
-import RendererManager from "@three/manager/RendererManager";
-import CameraManager from "@three/manager/CameraManager";
-import ManagerHDRI from "@three/manager/ManagerHRI";
-import SceneLoaderManager from "@three/manager/SceneLoaderManager";
-import SceneChangueManager from "@three/manager/SceneChangueManager";
-import ClockManager from "@three/manager/ClockManager";
+import RendererManager from "@three/core/manager/RendererManager";
+import CameraManager from "@three/core/manager/CameraManager";
+import ManagerHDRI from "@three/core/manager/ManagerHRI";
+import SceneLoaderManager from "@three/core/manager/SceneLoaderManager";
+import SceneChangueManager from "@three/core/manager/SceneChangueManager";
+import ClockManager from "@three/core/manager/ClockManager";
 
 import CameraController from "@three/entities/system/CameraDefault";
 
@@ -74,7 +74,7 @@ export default class APPThree {
 
             //? Cambia la escena inicial
             this.sceneChangueManager.changeScene({
-                sceneName: "sceneOne",
+                sceneName: "nivel1",
                 sceneParams: { activity: 1 },
                 callback: () => {
                     this.render();

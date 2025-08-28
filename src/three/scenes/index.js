@@ -1,10 +1,10 @@
 // scenesIndex.js
 import TemplateScene from './Template';
-import SceneOne from './SceneOne';
+import Nivel1 from './Nivel1';
 
 const scenesIndex = {
     "testScene": TemplateScene,
-    "sceneOne": SceneOne,
+    "nivel1": Nivel1,
 };
 
 export const getSceneClass = (sceneName) => {
