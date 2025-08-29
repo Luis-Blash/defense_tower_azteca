@@ -7,6 +7,15 @@ import WaypointSystem from "@three/systems/WaypointSystem";
 
 
 export default class Golem extends BaseEntity {
+    /**
+     * @param {Object} config
+     * @param {string} config.name
+     * @param {number} config.life
+     * @param {number} config.maxLife
+     * @param {Object} config.loadingManager
+     * @param {string} config.modelPath
+     * @param {number} config.speed
+     */
     constructor(config = {}) {
         const {
             name = "Golem",
@@ -14,7 +23,7 @@ export default class Golem extends BaseEntity {
             maxLife = 100,
             loadingManager,
             modelPath,
-            speed = 10
+            speed = 10,
         } = config
 
         super({ name });

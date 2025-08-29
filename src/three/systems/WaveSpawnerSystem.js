@@ -1,0 +1,58 @@
+import * as SkeletonUtils from "three/examples/jsm/utils/SkeletonUtils.js";
+import BaseSystem from "@three/base/BaseSystem";
+
+export default class WaveSpawnerSystem extends BaseSystem {
+  constructor({ scene, prototypes = {}, waves = [], pathWaypoints = [], goal = null }) {
+    super();
+    this.scene = scene;
+    this.prototypes = prototypes;
+    this.waves = waves;
+    
+    this.pathWaypoints = pathWaypoints;
+    this.goal = goal;
+
+    this.pool = {};
+    this.timers = {};
+
+    this.activeEntities = new Set();
+  }
+  start() { 
+    this.waves.forEach(w => (this.timers[w.name] = { elapsed: 0, spawned: 0 })); 
+  }
+
+  update(delta) {
+    
+    this.waves.forEach((w, index) => {
+      const t = this.timers[w.name];
+      t.elapsed += delta * 1000;
+      if (t.spawned < w.maxEnemies && t.elapsed >= w.spawnInterval) {
+        t.elapsed = 0; t.spawned++;
+        this._spawnEnemy(w, index);
+      }
+    });
+
+    this.activeEntities.forEach((entity) => {
+      entity.entity.update(delta);
+    });
+  }
+
+  _spawnEnemy(wave, index) {
+    const type = wave.enemiesTypes[0]; // o elige aleatorio
+    const protoKey = type.EnemyClass.name;
+    const proto = this.prototypes[protoKey];
+    if (!proto) return;
+
+    const protoModel = proto.getComponent("model").getModelInstance();
+
+    const cloneEntity = new type.EnemyClass({ ...type.config});
+    cloneEntity.getComponent("model").modelInstance = SkeletonUtils.clone(protoModel);
+    cloneEntity.add(cloneEntity.getComponent("model").modelInstance);
+    
+    if(this.pathWaypoints.length > 0 && this.goal) {
+      cloneEntity.getSystem("waypoint").setPath(this.pathWaypoints,this.goal);
+    }
+
+    this.scene.add(cloneEntity);
+    this.activeEntities.add({waveIndex: index, entity: cloneEntity});
+  }
+}

@@ -3,19 +3,22 @@ import { AmbientLight, Scene, Vector3 } from "three";
 import ActityOne from "./ActivityOne";
 
 import MouseEvents from "@three/systems/MouseEvents";
+
 import DebugMeshSystem from "@three/systems/DebugMeshSystem";
+import WaveSpawnerSystem from "@three/systems/WaveSpawnerSystem";
+
+import GolemModel from "@assets/models/Golem6.glb";
 
 import Golem from "@three/entities/enemy/Golem";
 import Waypoint from "@three/entities/Waypoint/Waypoint";
 import Pyramid from "@three/entities/pyramid/Pyramid";
 
-import EnemyTest from "@assets/models/Golem6.glb";
 
 const Activities = {
 	1: ActityOne
 }
 
-export default class TemplateScene extends Scene {
+export default class NivelOne extends Scene {
 	// configApp { loadingManager, camera, hdri }, sceneParams lo que le pases
 	constructor(configApp, sceneParams) {
 		super();
@@ -47,10 +50,6 @@ export default class TemplateScene extends Scene {
 		this.camera.orbit.controls.enablePan = true
 		this.camera.orbit.controls.enableRotate = true
 
-		this.golem = new Golem({ name: "Golem", speed: 10, loadingManager: this.loadingManager, modelPath: EnemyTest })
-		this.golem.addSystem("debug", new DebugMeshSystem({ visible: true, size: 1.5 }));
-		this.add(this.golem)
-
 		this.pyramid = new Pyramid({ name: "Pyramid", position: new Vector3(-20, 0, 0) })
 		this.pyramid.addSystem("debug", new DebugMeshSystem({ color: 0xcc0000, visible: true, size: 1.5 }));
 		this.add(this.pyramid)
@@ -74,7 +73,28 @@ export default class TemplateScene extends Scene {
 			pathWaypoints.push(waypoint)
 		})
 
-		this.golem.getSystem("waypoint").setPath(pathWaypoints, this.pyramid)
+
+		this.prototypeGolem = new Golem({ name: "GolemProto", speed: 10, modelPath: GolemModel, loadingManager: this.loadingManager });
+		this.prototypeGolem.visible = false;
+		this.add(this.prototypeGolem)
+
+		this.spawner = new WaveSpawnerSystem({ 
+			scene: this, 
+			prototypes: { Golem: this.prototypeGolem }, 
+			waves: [
+				{
+					name: "wave_1",
+					spawnInterval: 3000,
+					maxEnemies: 3,
+					enemiesTypes: [
+						{ EnemyClass: Golem, config: { speed: 5, life: 40 } },
+					]
+				}
+			],
+			pathWaypoints,
+			goal: this.pyramid,
+		});
+		this.spawner.start();
 	}
 
 	reActiveScene(sceneParams = { activity: 0 }) {
@@ -99,8 +119,8 @@ export default class TemplateScene extends Scene {
 		if (this.currentActivity) {
 			this.currentActivity.renderAnimations(delta)
 		}
-		if(this.golem){
-			this.golem.update(delta)
+		if (this.spawner) {
+			this.spawner.update(delta)
 		}
 	}
 
