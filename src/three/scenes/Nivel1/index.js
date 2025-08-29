@@ -9,6 +9,8 @@ import Golem from "@three/entities/enemy/Golem";
 import Waypoint from "@three/entities/Waypoint/Waypoint";
 import Pyramid from "@three/entities/pyramid/Pyramid";
 
+import EnemyTest from "@assets/models/Golem6.glb";
+
 const Activities = {
 	1: ActityOne
 }
@@ -45,7 +47,7 @@ export default class TemplateScene extends Scene {
 		this.camera.orbit.controls.enablePan = true
 		this.camera.orbit.controls.enableRotate = true
 
-		this.golem = new Golem({ name: "Golem" })
+		this.golem = new Golem({ name: "Golem", speed: 10, loadingManager: this.loadingManager, modelPath: EnemyTest })
 		this.golem.addSystem("debug", new DebugMeshSystem({ visible: true, size: 1.5 }));
 		this.add(this.golem)
 
