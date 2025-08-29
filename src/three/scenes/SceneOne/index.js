@@ -6,7 +6,7 @@ const Activities = {
 }
 
 // MouseEvent
-import MouseEvents from "@three/entities/system/MouseEvent/MouseEvents";
+import MouseEvents from "@three/systems/MouseEvents";
 // Entities
 import MapScene from "@three/entities/map/core/MapScene";
 import EnemyTest from "@three/entities/enemy/models/EnemyTest";

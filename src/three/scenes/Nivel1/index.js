@@ -1,8 +1,13 @@
-import { AmbientLight, Scene } from "three";
+import { AmbientLight, Scene, Vector3 } from "three";
 
 import ActityOne from "./ActivityOne";
 
-import MouseEvents from "@three/entities/system/MouseEvent/MouseEvents";
+import MouseEvents from "@three/systems/MouseEvents";
+import DebugMeshSystem from "@three/systems/DebugMeshSystem";
+
+import Golem from "@three/entities/enemy/Golem";
+import Waypoint from "@three/entities/Waypoint/Waypoint";
+import Pyramid from "@three/entities/pyramid/Pyramid";
 
 const Activities = {
 	1: ActityOne
@@ -40,8 +45,34 @@ export default class TemplateScene extends Scene {
 		this.camera.orbit.controls.enablePan = true
 		this.camera.orbit.controls.enableRotate = true
 
-		
+		this.golem = new Golem({ name: "Golem" })
+		this.golem.addSystem("debug", new DebugMeshSystem({ visible: true, size: 1.5 }));
+		this.add(this.golem)
 
+		this.pyramid = new Pyramid({ name: "Pyramid", position: new Vector3(-20, 0, 0) })
+		this.pyramid.addSystem("debug", new DebugMeshSystem({ color: 0xcc0000, visible: true, size: 1.5 }));
+		this.add(this.pyramid)
+
+		const pathWaypoints = []
+		const waypoints = [
+			{ position: new Vector3(8, 0, -3) },
+			{ position: new Vector3(5, 0, 2) },
+			{ position: new Vector3(0, 0, 5) },
+			{ position: new Vector3(-5, 0, 5) },
+			{ position: new Vector3(-10, 0, 0) },
+		];
+		waypoints.forEach((wp, index) => {
+			const waypoint = new Waypoint({
+				name: "Waypoint",
+				id: index,
+				position: wp.position
+			})
+			waypoint.addSystem("debug", new DebugMeshSystem({ color: 0x00ff00, visible: true, size: 1 }));
+			this.add(waypoint)
+			pathWaypoints.push(waypoint)
+		})
+
+		this.golem.getSystem("waypoint").setPath(pathWaypoints, this.pyramid)
 	}
 
 	reActiveScene(sceneParams = { activity: 0 }) {
@@ -65,6 +96,9 @@ export default class TemplateScene extends Scene {
 	renderAnimations(delta) {
 		if (this.currentActivity) {
 			this.currentActivity.renderAnimations(delta)
+		}
+		if(this.golem){
+			this.golem.update(delta)
 		}
 	}
 

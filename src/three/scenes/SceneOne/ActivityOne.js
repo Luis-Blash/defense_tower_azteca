@@ -2,7 +2,7 @@ import { Vector3 } from "three";
 import Tower from "@three/entities/tower/core/Tower";
 import Enemy from "@three/entities/enemy/core/Enemy";
 import Pyramid from "@three/entities/pyramid/core/Pyramid";
-import Waypoint from "@three/entities/system/Waypoint/Waypoint";
+import Waypoint from "@three/entities/Waypoint/Waypoint";
 import TowerManager from "@three/entities/tower/manager/TowerManager";
 import EnemyManager from "@three/entities/enemy/managers/EnemyManager";
 

@@ -39,7 +39,7 @@ export default class SceneLoaderManager {
 		};
 
 		//! SI DESDE UN INICIO NECESITA EL LOADER AGREGA ESTA PARTE A ONLOAD DEL LOADER
-		// callback(sceneInstance)
-		// ObserverEmitter.emit(EVENTS.loader3D.onLoad);
+		callback(sceneInstance)
+		ObserverEmitter.emit(EVENTS.loader3D.onLoad);
 	}
 }
