@@ -38,6 +38,7 @@ export default class WaypointSystem extends BaseSystem {
             if (this.currentIndex < this.path.length) {
                 this.currentIndex++;
             } else {
+                this.entity.die()
                 return;
             }
         } else {

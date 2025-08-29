@@ -36,6 +36,7 @@ export default class Golem extends BaseEntity {
 
     die() {
         console.log(`${this.name} destruido`);
+        this.visible = false;
         this.deactivate();
     }
 

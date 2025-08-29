@@ -21,7 +21,6 @@ export default class ModelComponent extends BaseComponent {
 
         const loader = dracoHelperLoader(this.loadingManager);
         loader.load(this.path, gltf => {
-            console.log("Model loaded");
             this.modelInstance = gltf.scene;
             entity.add(this.modelInstance);
         });
