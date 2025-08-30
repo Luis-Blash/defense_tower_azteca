@@ -12,6 +12,9 @@ export default class ModelComponent extends BaseComponent {
         this.loadingManager = loadingManager;
         this.path = path;
         this.modelInstance = null;
+        this.gltf = null;
+        this.onModelReadyCallbacks = [];
+
     }
 
     start(entity) {
@@ -20,14 +23,24 @@ export default class ModelComponent extends BaseComponent {
         if(!this.loadingManager)  return;
 
         const loader = dracoHelperLoader(this.loadingManager);
-        loader.load(this.path, gltf => {
+        loader.load(this.path, gltf => {            
             this.modelInstance = gltf.scene;
+            this.gltf = gltf;
             entity.add(this.modelInstance);
+            this.onModelReadyCallbacks.forEach(fn => fn());
         });
+    }
+
+    addOnModelReadyCallback(fn) {
+        this.onModelReadyCallbacks.push(fn);
     }
 
     getModelInstance() {
         return this.modelInstance;
+    }
+
+    getGLTF() {
+        return this.gltf;
     }
 
     dispose() {

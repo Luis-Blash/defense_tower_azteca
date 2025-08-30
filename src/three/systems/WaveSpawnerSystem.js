@@ -43,14 +43,19 @@ export default class WaveSpawnerSystem extends BaseSystem {
     if (!proto) return;
 
     const protoModel = proto.getComponent("model").getModelInstance();
+    const protoGLTF = proto.getComponent("model").getGLTF();
 
     const cloneEntity = new type.EnemyClass({ ...type.config});
     cloneEntity.getComponent("model").modelInstance = SkeletonUtils.clone(protoModel);
+    cloneEntity.getComponent("model").gltf = protoGLTF
     cloneEntity.add(cloneEntity.getComponent("model").modelInstance);
     
     if(this.pathWaypoints.length > 0 && this.goal) {
       cloneEntity.getSystem("waypoint").setPath(this.pathWaypoints,this.goal);
     }
+
+    cloneEntity.getSystem("anim").initMixer(cloneEntity);
+    cloneEntity.getSystem("anim").play("walk");
 
     this.scene.add(cloneEntity);
     this.activeEntities.add({waveIndex: index, entity: cloneEntity});

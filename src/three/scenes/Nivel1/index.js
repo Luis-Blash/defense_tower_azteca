@@ -76,11 +76,14 @@ export default class NivelOne extends Scene {
 
 		this.prototypeGolem = new Golem({ name: "GolemProto", speed: 10, modelPath: GolemModel, loadingManager: this.loadingManager });
 		this.prototypeGolem.visible = false;
+		// this.prototypeGolem.getComponent("model").addOnModelReadyCallback(() => {
+		// 	this.prototypeGolem.getSystem("anim").play("walk");
+		// });
 		this.add(this.prototypeGolem)
 
-		this.spawner = new WaveSpawnerSystem({ 
-			scene: this, 
-			prototypes: { Golem: this.prototypeGolem }, 
+		this.spawner = new WaveSpawnerSystem({
+			scene: this,
+			prototypes: { Golem: this.prototypeGolem },
 			waves: [
 				{
 					name: "wave_1",
