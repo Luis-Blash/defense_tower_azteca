@@ -7,7 +7,7 @@ export default class WaveSpawnerSystem extends BaseSystem {
     this.scene = scene;
     this.prototypes = prototypes;
     this.waves = waves;
-    
+
     this.pathWaypoints = pathWaypoints;
     this.goal = goal;
 
@@ -16,12 +16,12 @@ export default class WaveSpawnerSystem extends BaseSystem {
 
     this.activeEntities = new Set();
   }
-  start() { 
-    this.waves.forEach(w => (this.timers[w.name] = { elapsed: 0, spawned: 0 })); 
+  start() {
+    this.waves.forEach(w => (this.timers[w.name] = { elapsed: 0, spawned: 0 }));
   }
 
   update(delta) {
-    
+
     this.waves.forEach((w, index) => {
       const t = this.timers[w.name];
       t.elapsed += delta * 1000;
@@ -45,19 +45,27 @@ export default class WaveSpawnerSystem extends BaseSystem {
     const protoModel = proto.getComponent("model").getModelInstance();
     const protoGLTF = proto.getComponent("model").getGLTF();
 
-    const cloneEntity = new type.EnemyClass({ ...type.config});
+    const cloneEntity = new type.EnemyClass({ ...type.config });
+
+    // Asignar modelo clonado
     cloneEntity.getComponent("model").modelInstance = SkeletonUtils.clone(protoModel);
-    cloneEntity.getComponent("model").gltf = protoGLTF
+    cloneEntity.getComponent("model").gltf = protoGLTF;
     cloneEntity.add(cloneEntity.getComponent("model").modelInstance);
-    
-    if(this.pathWaypoints.length > 0 && this.goal) {
-      cloneEntity.getSystem("waypoint").setPath(this.pathWaypoints,this.goal);
+
+    // Reinicializar mixer con modelo clonado
+    const animComp = cloneEntity.getComponent("animation");
+    animComp.initMixer(
+      cloneEntity.getComponent("model").modelInstance,
+      protoGLTF?.animations
+    );
+
+    if (this.pathWaypoints.length > 0 && this.goal) {
+      cloneEntity.getSystem("waypoint").setPath(this.pathWaypoints, this.goal);
     }
 
-    cloneEntity.getSystem("anim").initMixer(cloneEntity);
-    cloneEntity.getSystem("anim").play("walk");
+    animComp.play("walk");
 
     this.scene.add(cloneEntity);
-    this.activeEntities.add({waveIndex: index, entity: cloneEntity});
+    this.activeEntities.add({ waveIndex: index, entity: cloneEntity });
   }
 }

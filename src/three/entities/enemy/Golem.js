@@ -1,5 +1,6 @@
 // Golem.js
 import BaseEntity from "@three/base/BaseEntity";
+import AnimationComponent from "@three/components/AnimationComponent";
 import HealthComponent from "@three/components/HealthComponent";
 import ModelComponent from "@three/components/ModelComponent";
 import MovementComponent from "@three/components/MovementComponent";
@@ -32,6 +33,7 @@ export default class Golem extends BaseEntity {
             .addComponent("health", new HealthComponent({ life, maxLife }))
             .addComponent("movement", new MovementComponent({ speed }))
             .addComponent("model", new ModelComponent({ loadingManager, path: modelPath }))
+            .addComponent("animation", new AnimationComponent())
             .addSystem("waypoint", new WaypointSystem())
             .addSystem("anim", new AnimationSystem())
     }
@@ -44,6 +46,6 @@ export default class Golem extends BaseEntity {
 
     update(delta) {
         this.getSystem("waypoint").move(delta)
-        this.getSystem("anim").update(delta)
+        this.getSystem("anim").update(delta)        
     }
 }
