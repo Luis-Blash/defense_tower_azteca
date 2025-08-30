@@ -37,7 +37,8 @@ export default class WaveSpawnerSystem extends BaseSystem {
   }
 
   _spawnEnemy(wave, index) {
-    const type = wave.enemiesTypes[0]; // o elige aleatorio
+    const randomIndex = Math.floor(Math.random() * wave.enemiesTypes.length);
+    const type = wave.enemiesTypes[randomIndex];
     const protoKey = type.EnemyClass.name;
     const proto = this.prototypes[protoKey];
     if (!proto) return;

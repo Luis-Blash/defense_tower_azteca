@@ -8,10 +8,12 @@ import DebugMeshSystem from "@three/systems/DebugMeshSystem";
 import WaveSpawnerSystem from "@three/systems/WaveSpawnerSystem";
 
 import GolemModel from "@assets/models/Golem6.glb";
+import WarriorModel from "@assets/models/Guerrero5.glb";
 
 import Golem from "@three/entities/enemy/Golem";
 import Waypoint from "@three/entities/Waypoint/Waypoint";
 import Pyramid from "@three/entities/pyramid/Pyramid";
+import Warrior from "@three/entities/enemy/Warrior";
 
 
 const Activities = {
@@ -76,21 +78,26 @@ export default class NivelOne extends Scene {
 
 		this.prototypeGolem = new Golem({ name: "GolemProto", speed: 10, modelPath: GolemModel, loadingManager: this.loadingManager });
 		this.prototypeGolem.visible = false;
-		// this.prototypeGolem.getComponent("model").addOnModelReadyCallback(() => {
-		// 	this.prototypeGolem.getSystem("anim").play("walk");
-		// });
 		this.add(this.prototypeGolem)
+
+		this.prototypeWarrior = new Warrior({ name: "WarriorProto", speed: 10, modelPath: WarriorModel, loadingManager: this.loadingManager });
+		this.prototypeWarrior.visible = false;
+		this.add(this.prototypeWarrior)
 
 		this.spawner = new WaveSpawnerSystem({
 			scene: this,
-			prototypes: { Golem: this.prototypeGolem },
+			prototypes: { 
+				Golem: this.prototypeGolem, 
+				Warrior: this.prototypeWarrior 
+			},
 			waves: [
 				{
 					name: "wave_1",
 					spawnInterval: 3000,
 					maxEnemies: 3,
 					enemiesTypes: [
-						{ EnemyClass: Golem, config: { speed: 5, life: 40 } },
+						{ EnemyClass: Golem, config: { speed: 3, life: 200 } },
+						{ EnemyClass: Warrior, config: { speed: 5, life: 100 } },
 					]
 				}
 			],
