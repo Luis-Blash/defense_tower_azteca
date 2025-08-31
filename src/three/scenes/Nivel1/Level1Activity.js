@@ -1,5 +1,5 @@
 import BaseActivityScene from "@three/base/BaseActivityScene"
-import { configLevel1 } from "./resource";
+import { configLevel1, createClickTower } from "./resource";
 
 export default class Level1Activity extends BaseActivityScene {
     constructor(scene, config = {}) {
@@ -23,28 +23,15 @@ export default class Level1Activity extends BaseActivityScene {
         this.scene.getSystem("waveSpawner").setWaves(waves)
         this.scene.getSystem("waveSpawner").start()
 
-        this.scene.getSystem("mouseEvents").setClickObject("Escenario1")
-        this.scene.getSystem("mouseEvents").setCallBackIntersect(({ intersects, objectClickByName }) => {
-            const intersection = intersects[0];
-            const clickedObject = intersection.object;
-
-            if (objectClickByName.includes(clickedObject.name)) {
-                const clickPoint = intersection.point;
-               console.log(clickPoint);
-            }
-        })
-
-        console.log();
-        
-        
+        this.scene.getSystem("clickRespawn").mouseClick(createClickTower)
     }
     
     update(delta) {
         if (!this.isActive) return
         this.scene.getSystem("waveSpawner").update(delta)
         const enemies = this.scene.getSystem("waveSpawner").getActiveEntities();
-        this.scene.getEntity("prototypeQuetzalcoatl").getSystem("detection").setWaveSpawnerSystem(enemies)
-        this.scene.getEntity("prototypeQuetzalcoatl").update(delta)
+        this.scene.getSystem("clickRespawn").setWaveSpawnerSystem(enemies)
+        this.scene.getSystem("clickRespawn").update(delta)
     }
     
     dispose() {

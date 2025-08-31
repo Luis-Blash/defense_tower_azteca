@@ -1,12 +1,12 @@
 import { AmbientLight, Vector3 } from "three";
+import * as SkeletonUtils from "three/examples/jsm/utils/SkeletonUtils.js";
+
 
 import GolemModel from "@assets/models/Golem6.glb";
 import WarriorModel from "@assets/models/Guerrero5.glb";
 import MapSceneModel from "@assets/models/Escenario1.glb";
 import PyramidModel from "@assets/models/Piramide4.glb";
 import QuetzalcoatlModel from "@assets/models/Quetzalcoatl12.glb";
-
-import DebugMeshComponent from "@three/components/DebugMeshComponent";
 
 import Pyramid from "@three/entities/pyramid/Pyramid";
 import Golem from "@three/entities/enemy/Golem";
@@ -41,13 +41,7 @@ export const createResourcesEntities = ({ loadingManager }) => {
     });
 
     const prototypeQuetzalcoatl = new Quetzalcoatl({ name: "Quetzalcoatl", loadingManager, modelPath: QuetzalcoatlModel });
-    prototypeQuetzalcoatl.visible = true;
-    prototypeQuetzalcoatl.position.set(-10, 0, 0)
-    prototypeQuetzalcoatl.getComponent("model").addOnModelReadyCallback(() => {
-        const mesh = prototypeQuetzalcoatl.getComponent("model").getModelInstance();
-        mesh.position.set(0, -1, 0);
-        mesh.scale.set(2, 2, 2);
-    });
+    prototypeQuetzalcoatl.visible = false;
 
     return {
         pyramid,
@@ -82,7 +76,6 @@ export const configLevel1 = () => {
             id: index,
             position: wp.position
         })
-        // waypoint.addSystem("debug", new DebugMeshComponent({ color: 0x00ff00, visible: true, size: 1 }));
         pathWaypoints.push(waypoint)
     })
 
@@ -102,4 +95,26 @@ export const configLevel1 = () => {
         pathWaypoints,
         waves
     }
+}
+
+export const createClickTower = (prototypeQuetzalcoatl, position) => {
+
+    const protoModel = prototypeQuetzalcoatl.getComponent("model").getModelInstance();
+    const protoGLTF = prototypeQuetzalcoatl.getComponent("model").getGLTF()
+    
+
+    const tower = new Quetzalcoatl({ name: "Quetzalcoatl", radius: 8, debugRange: true });
+    tower.position.set(position.x, 0, position.z);
+    tower.getComponent("model").modelInstance = SkeletonUtils.clone(protoModel);
+    tower.getComponent("model").gltf = protoGLTF;
+    tower.add(tower.getComponent("model").getModelInstance());
+    const animComp = tower.getComponent("animation");
+    animComp.initMixer(
+      tower.getComponent("model").getModelInstance(),
+      protoGLTF?.animations
+    );
+    tower.getComponent("model").getModelInstance().position.set(0, -1, 0);
+    tower.getComponent("model").getModelInstance().scale.set(2, 2, 2);
+
+    return tower
 }
