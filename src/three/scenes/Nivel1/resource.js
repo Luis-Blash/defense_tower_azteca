@@ -14,6 +14,7 @@ import Warrior from "@three/entities/enemy/Warrior";
 import Waypoint from "@three/entities/waypoint/Waypoint";
 import MapScene from "@three/entities/maps/MapScene";
 import Quetzalcoatl from "@three/entities/towers/Quetzalcoatl";
+import Projectile from "@three/entities/projectile/Projectile";
 
 
 export const createResourcesEntities = ({ loadingManager }) => {
@@ -117,4 +118,11 @@ export const createClickTower = (prototypeQuetzalcoatl, position) => {
     tower.getComponent("model").getModelInstance().scale.set(2, 2, 2);
 
     return tower
+}
+
+
+export const createProjectile = () => {
+    const projectile = new Projectile({ speed: 10 })
+    projectile.getSystem("movement").setDirection(new Vector3(1, 0, 0))
+    return projectile
 }
