@@ -4,6 +4,7 @@ import Level1Activity from "./Level1Activity";
 
 import SceneActivitySystem from "@three/systems/SceneActivitySystem";
 import WaveSpawnerSystem from "@three/systems/WaveSpawnerSystem";
+import MouseEventsSystem from "@three/systems/MouseEventsSystem";
 
 export default class NivelOne extends BaseScene {
 	constructor(configApp, props) {
@@ -45,7 +46,8 @@ export default class NivelOne extends BaseScene {
 				waves: [],
 				pathWaypoints: [],
 				goal: this.getEntity("pyramid"),
-			}));
+			}))
+			.addSystem("mouseEvents", new MouseEventsSystem())
 
 		this
 			.getSystem("sceneActivity")

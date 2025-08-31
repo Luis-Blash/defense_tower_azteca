@@ -2,6 +2,7 @@ import { AmbientLight, Vector3 } from "three";
 
 import GolemModel from "@assets/models/Golem6.glb";
 import WarriorModel from "@assets/models/Guerrero5.glb";
+import MapSceneModel from "@assets/models/Escenario1.glb";
 
 import DebugMeshSystem from "@three/systems/DebugMeshSystem";
 
@@ -9,6 +10,7 @@ import Pyramid from "@three/entities/pyramid/Pyramid";
 import Golem from "@three/entities/enemy/Golem";
 import Warrior from "@three/entities/enemy/Warrior";
 import Waypoint from "@three/entities/waypoint/Waypoint";
+import MapScene from "@three/entities/maps/MapScene";
 
 
 export const createResourcesEntities = ({ loadingManager }) => {
@@ -22,8 +24,11 @@ export const createResourcesEntities = ({ loadingManager }) => {
     prototypeWarrior.position.set(2, 0, 0)
     prototypeWarrior.visible = false;
 
+    const mapScene = new MapScene({ name: "MapScene", loadingManager, modelPath: MapSceneModel });
+
     return {
         pyramid,
+        mapScene,
         prototypeGolem,
         prototypeWarrior
     }
@@ -53,7 +58,7 @@ export const configLevel1 = () => {
             id: index,
             position: wp.position
         })
-        waypoint.addSystem("debug", new DebugMeshSystem({ color: 0x00ff00, visible: true, size: 1 }));
+        // waypoint.addSystem("debug", new DebugMeshSystem({ color: 0x00ff00, visible: true, size: 1 }));
         pathWaypoints.push(waypoint)
     })
 
