@@ -13,6 +13,7 @@ export default class Quetzalcoatl extends BaseEntity {
             loadingManager,
             modelPath,
             radius = 8,
+            damage = 10,
             debugRange = false,
         } = config
 
@@ -20,8 +21,8 @@ export default class Quetzalcoatl extends BaseEntity {
 
         this
             .addComponent("model", new ModelComponent({ loadingManager, path: modelPath }))
-            .addComponent("animation", new AnimationComponent())
-            .addComponent("attackRange", new AttackRangeComponent({ radius, debug: debugRange }))
+            .addComponent("animation", new AnimationComponent({ names: ["atack"] }))
+            .addComponent("attackRange", new AttackRangeComponent({ radius, damage, debug: debugRange }))
             .addSystem("anim", new AnimationSystem())
             .addSystem("detection", new TowerDetectionSystem())
             .addSystem("attack", new TowerAttackSystem());

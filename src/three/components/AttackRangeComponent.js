@@ -6,14 +6,14 @@ export default class AttackRangeComponent extends BaseComponent {
         super();
 
         const {
+            damage = 10,
             radius = 5,
-            cooldown = 100,
             debug = false,
             color = 0x00ff00
         } = config;
 
         this.radius = radius;
-        this.cooldown = cooldown;
+        this.damage = damage;
 
         this.debug = debug;
         this.color = color;
@@ -35,8 +35,8 @@ export default class AttackRangeComponent extends BaseComponent {
         return this.radius;
     }
 
-    getCooldown() {
-        return this.cooldown;
+    getDamage() {
+        return this.damage;
     }
 
     dispose() {
