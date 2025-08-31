@@ -8,7 +8,7 @@ import DebugMeshSystem from "@three/systems/DebugMeshSystem";
 import Pyramid from "@three/entities/pyramid/Pyramid";
 import Golem from "@three/entities/enemy/Golem";
 import Warrior from "@three/entities/enemy/Warrior";
-import Waypoint from "@three/entities/Waypoint/Waypoint";
+import Waypoint from "@three/entities/waypoint/Waypoint";
 
 
 export const createResourcesEntities = ({ loadingManager }) => {
