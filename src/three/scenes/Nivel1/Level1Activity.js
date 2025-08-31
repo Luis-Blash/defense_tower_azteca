@@ -33,12 +33,18 @@ export default class Level1Activity extends BaseActivityScene {
                console.log(clickPoint);
             }
         })
+
+        console.log();
+        
         
     }
     
     update(delta) {
         if (!this.isActive) return
-        this.scene.getSystem("waveSpawner").update(delta)        
+        this.scene.getSystem("waveSpawner").update(delta)
+        const enemies = this.scene.getSystem("waveSpawner").getActiveEntities();
+        this.scene.getEntity("prototypeQuetzalcoatl").getSystem("detection").setWaveSpawnerSystem(enemies)
+        this.scene.getEntity("prototypeQuetzalcoatl").update(delta)
     }
     
     dispose() {

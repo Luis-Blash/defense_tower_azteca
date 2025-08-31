@@ -40,15 +40,21 @@ export const createResourcesEntities = ({ loadingManager }) => {
         mesh.position.set(0, -2, 0);
     });
 
-    const quetzalcoatl = new Quetzalcoatl({ name: "Quetzalcoatl", loadingManager, modelPath: QuetzalcoatlModel });
-    quetzalcoatl.visible = true;
+    const prototypeQuetzalcoatl = new Quetzalcoatl({ name: "Quetzalcoatl", loadingManager, modelPath: QuetzalcoatlModel });
+    prototypeQuetzalcoatl.visible = true;
+    prototypeQuetzalcoatl.position.set(-10, 0, 0)
+    prototypeQuetzalcoatl.getComponent("model").addOnModelReadyCallback(() => {
+        const mesh = prototypeQuetzalcoatl.getComponent("model").getModelInstance();
+        mesh.position.set(0, -1, 0);
+        mesh.scale.set(2, 2, 2);
+    });
 
     return {
         pyramid,
         mapScene,
         prototypeGolem,
         prototypeWarrior,
-        quetzalcoatl
+        prototypeQuetzalcoatl
     }
 }
 

@@ -85,4 +85,12 @@ export default class WaveSpawnerSystem extends BaseSystem {
   setPrototypes(prototypes) {
     this.prototypes = prototypes;
   }
+
+  getActiveEntities() {
+    const entities = [];
+    this.activeEntities.forEach((entity) => {
+      entities.push(entity.entity);
+    });
+    return entities;
+  }
 }
