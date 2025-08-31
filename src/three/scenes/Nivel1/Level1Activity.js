@@ -38,7 +38,7 @@ export default class Level1Activity extends BaseActivityScene {
     
     update(delta) {
         if (!this.isActive) return
-        this.scene.getSystem("waveSpawner").update(delta)
+        this.scene.getSystem("waveSpawner").update(delta)        
     }
     
     dispose() {

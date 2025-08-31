@@ -67,6 +67,7 @@ export default class WaveSpawnerSystem extends BaseSystem {
     animComp.play("walk");
 
     cloneEntity.getComponent("model").getModelInstance().position.set(0, -1, 0);
+    cloneEntity.getComponent("model").getModelInstance().scale.set(2, 2, 2);
 
     this.scene.add(cloneEntity);
     this.activeEntities.add({ waveIndex: index, entity: cloneEntity });

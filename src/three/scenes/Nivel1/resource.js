@@ -4,14 +4,16 @@ import GolemModel from "@assets/models/Golem6.glb";
 import WarriorModel from "@assets/models/Guerrero5.glb";
 import MapSceneModel from "@assets/models/Escenario1.glb";
 import PyramidModel from "@assets/models/Piramide4.glb";
+import QuetzalcoatlModel from "@assets/models/Quetzalcoatl12.glb";
 
-// import DebugMeshComponent from "@three/components/DebugMeshComponent";
+import DebugMeshComponent from "@three/components/DebugMeshComponent";
 
 import Pyramid from "@three/entities/pyramid/Pyramid";
 import Golem from "@three/entities/enemy/Golem";
 import Warrior from "@three/entities/enemy/Warrior";
 import Waypoint from "@three/entities/waypoint/Waypoint";
 import MapScene from "@three/entities/maps/MapScene";
+import Quetzalcoatl from "@three/entities/towers/Quetzalcoatl";
 
 
 export const createResourcesEntities = ({ loadingManager }) => {
@@ -38,11 +40,15 @@ export const createResourcesEntities = ({ loadingManager }) => {
         mesh.position.set(0, -2, 0);
     });
 
+    const quetzalcoatl = new Quetzalcoatl({ name: "Quetzalcoatl", loadingManager, modelPath: QuetzalcoatlModel });
+    quetzalcoatl.visible = true;
+
     return {
         pyramid,
         mapScene,
         prototypeGolem,
-        prototypeWarrior
+        prototypeWarrior,
+        quetzalcoatl
     }
 }
 
