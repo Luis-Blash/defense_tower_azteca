@@ -32,7 +32,7 @@ export default class SceneChangueManager {
 		if (this.scenes.has(sceneName)) {
 			console.log(' -- Scene already loaded ---');
 			this.currentScene = this.scenes.get(sceneName);
-			this.currentScene.reActiveScene();
+			this.currentScene.reLoad(sceneParams);
 			return
 		}
 
@@ -48,15 +48,15 @@ export default class SceneChangueManager {
 		})
 	}
 
-	renderAnimations(delta) {
+	update(delta) {
 		if (this.currentScene) {
-			this.currentScene.renderAnimations(delta);
+			this.currentScene.update(delta);
 		}
 	}
 
 	renderScene(delta) {
 		this.renderer.render(this.currentScene, this.camera);
-		this.renderAnimations(delta);
+		this.update(delta);
 	}
 
 	getCurrentScene() {

@@ -6,7 +6,7 @@ import SceneLoaderManager from "@three/core/manager/SceneLoaderManager";
 import SceneChangueManager from "@three/core/manager/SceneChangueManager";
 import ClockManager from "@three/core/manager/ClockManager";
 
-import CameraController from "@three/systems/CameraDefault";
+import CameraController from "@three/entities/CameraDefault";
 
 import StatsManager from "@three/utils/StatsManager";
 import TransformControlsHelper from "@three/utils/TransformControls";

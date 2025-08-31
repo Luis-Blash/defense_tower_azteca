@@ -69,4 +69,17 @@ export default class WaveSpawnerSystem extends BaseSystem {
     this.scene.add(cloneEntity);
     this.activeEntities.add({ waveIndex: index, entity: cloneEntity });
   }
+
+
+  setWaves(waves) {
+    this.waves = waves;
+  }
+
+  setPathWaypoints(pathWaypoints) {
+    this.pathWaypoints = pathWaypoints;
+  }
+
+  setPrototypes(prototypes) {
+    this.prototypes = prototypes;
+  }
 }

@@ -1,49 +1,19 @@
-import { AmbientLight, Scene, Vector3 } from "three";
+import BaseScene from "@three/base/BaseScene";
+import { createLight, createResourcesEntities } from "./resource";
+import Level1Activity from "./Level1Activity";
 
-import ActityOne from "./ActivityOne";
-
-import MouseEvents from "@three/systems/MouseEvents";
-
-import DebugMeshSystem from "@three/systems/DebugMeshSystem";
+import SceneActivitySystem from "@three/systems/SceneActivitySystem";
 import WaveSpawnerSystem from "@three/systems/WaveSpawnerSystem";
 
-import GolemModel from "@assets/models/Golem6.glb";
-import WarriorModel from "@assets/models/Guerrero5.glb";
+export default class NivelOne extends BaseScene {
+	constructor(configApp, props) {
+		super(configApp);
 
-import Golem from "@three/entities/enemy/Golem";
-import Waypoint from "@three/entities/Waypoint/Waypoint";
-import Pyramid from "@three/entities/pyramid/Pyramid";
-import Warrior from "@three/entities/enemy/Warrior";
-
-
-const Activities = {
-	1: ActityOne
-}
-
-export default class NivelOne extends Scene {
-	// configApp { loadingManager, camera, hdri }, sceneParams lo que le pases
-	constructor(configApp, sceneParams) {
-		super();
-
-		this.camera = configApp.camera;
-		this.loadingManager = configApp.loadingManager;
-		this.environment = configApp.hdri;
-		this.render = configApp.renderer
-		this.container = configApp.container
-		this.transformControlsHelper = configApp.transformControlsHelper
-		this.mouseEvents = new MouseEvents(this.camera, this.container, this.render, this);
-
-
-		this.currentActivity = null
-		this.mapScene = new Map()
-
-		this.init();
-		this.configScene()
-		this.activitys(sceneParams.activity)
-
+		this.createEntities()
+		this.createECS(props)
 	}
 
-	init() {
+	createEntities() {
 		this.camera.position.set(-28.0639, 15.7978, 18.1383)
 		this.camera.rotation.set(-0.7165, -0.8622, -0.5843)
 		this.camera.orbit.controls.minPolarAngle = Math.PI / 3;
@@ -52,88 +22,38 @@ export default class NivelOne extends Scene {
 		this.camera.orbit.controls.enablePan = true
 		this.camera.orbit.controls.enableRotate = true
 
-		this.pyramid = new Pyramid({ name: "Pyramid", position: new Vector3(-20, 0, 0) })
-		this.pyramid.addSystem("debug", new DebugMeshSystem({ color: 0xcc0000, visible: true, size: 1.5 }));
-		this.add(this.pyramid)
-
-		const pathWaypoints = []
-		const waypoints = [
-			{ position: new Vector3(8, 0, -3) },
-			{ position: new Vector3(5, 0, 2) },
-			{ position: new Vector3(0, 0, 5) },
-			{ position: new Vector3(-5, 0, 5) },
-			{ position: new Vector3(-10, 0, 0) },
-		];
-		waypoints.forEach((wp, index) => {
-			const waypoint = new Waypoint({
-				name: "Waypoint",
-				id: index,
-				position: wp.position
-			})
-			waypoint.addSystem("debug", new DebugMeshSystem({ color: 0x00ff00, visible: true, size: 1 }));
-			this.add(waypoint)
-			pathWaypoints.push(waypoint)
-		})
-
-
-		this.prototypeGolem = new Golem({ name: "GolemProto", speed: 10, modelPath: GolemModel, loadingManager: this.loadingManager });
-		this.prototypeGolem.visible = false;
-		this.add(this.prototypeGolem)
-
-		this.prototypeWarrior = new Warrior({ name: "WarriorProto", speed: 10, modelPath: WarriorModel, loadingManager: this.loadingManager });
-		this.prototypeWarrior.visible = false;
-		this.add(this.prototypeWarrior)
-
-		this.spawner = new WaveSpawnerSystem({
-			scene: this,
-			prototypes: { 
-				Golem: this.prototypeGolem, 
-				Warrior: this.prototypeWarrior 
-			},
-			waves: [
-				{
-					name: "wave_1",
-					spawnInterval: 3000,
-					maxEnemies: 3,
-					enemiesTypes: [
-						{ EnemyClass: Golem, config: { speed: 3, life: 200 } },
-						{ EnemyClass: Warrior, config: { speed: 5, life: 100 } },
-					]
-				}
-			],
-			pathWaypoints,
-			goal: this.pyramid,
-		});
-		this.spawner.start();
-	}
-
-	reActiveScene(sceneParams = { activity: 0 }) {
-		this.currentActivity = this.mapScene.get(sceneParams.activity)
-		this.currentActivity.reActiveScene()
-	}
-
-	configScene() {
-		this.ambient = new AmbientLight();
-		this.ambient.color.set(0xffffff);
-		this.ambient.intensity = 1;
-		this.add(this.ambient)
-	}
-
-	activitys(activity) {
-		if (!Activities[activity]) return
-		this.currentActivity = new Activities[activity](this.camera, this)
-		this.mapScene.set(activity, this.currentActivity)
-	}
-
-	renderAnimations(delta) {
-		if (this.currentActivity) {
-			this.currentActivity.renderAnimations(delta)
+		const entites = createResourcesEntities({ loadingManager: this.loadingManager })
+		for (const key in entites) {
+			this.addEntity(key, entites[key])
 		}
-		if (this.spawner) {
-			this.spawner.update(delta)
-		}
+
+		const lightConfig = createLight()
+		this.addEntity("light", lightConfig)
 	}
 
-	dispose() {
+	createECS(props) {
+		const { activity = 1 } = props
+		
+		this
+			.addSystem("sceneActivity", new SceneActivitySystem())
+			.addSystem("waveSpawner", new WaveSpawnerSystem({
+				scene: this,
+				prototypes: { 
+					Golem: this.getEntity("prototypeGolem"), 
+					Warrior: this.getEntity("prototypeWarrior") 
+				},
+				waves: [],
+				pathWaypoints: [],
+				goal: this.getEntity("pyramid"),
+			}));
+
+		this
+			.getSystem("sceneActivity")
+			.registerActivity(1, Level1Activity)
+			.switchTo(activity)
+	}
+
+	update(delta) {
+		this.systems.get("sceneActivity").update(delta)
 	}
 }
