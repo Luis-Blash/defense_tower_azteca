@@ -3,8 +3,9 @@ import { AmbientLight, Vector3 } from "three";
 import GolemModel from "@assets/models/Golem6.glb";
 import WarriorModel from "@assets/models/Guerrero5.glb";
 import MapSceneModel from "@assets/models/Escenario1.glb";
+import PyramidModel from "@assets/models/Piramide4.glb";
 
-import DebugMeshSystem from "@three/systems/DebugMeshSystem";
+// import DebugMeshComponent from "@three/components/DebugMeshComponent";
 
 import Pyramid from "@three/entities/pyramid/Pyramid";
 import Golem from "@three/entities/enemy/Golem";
@@ -14,8 +15,14 @@ import MapScene from "@three/entities/maps/MapScene";
 
 
 export const createResourcesEntities = ({ loadingManager }) => {
-    const pyramid = new Pyramid({ name: "Pyramid", position: new Vector3(-20, 0, 0) })
-    pyramid.addSystem("debug", new DebugMeshSystem({ color: 0xcc0000, visible: true, size: 1.5 }));
+    const pyramid = new Pyramid({ name: "Pyramid", loadingManager, modelPath: PyramidModel })
+    pyramid.position.set(-20, 0, 0)
+    pyramid.getComponent("model").addOnModelReadyCallback(() => {
+        const mesh = pyramid.getComponent("model").getModelInstance();
+        mesh.scale.set(6, 6, 6);
+        mesh.rotation.set(0, Math.PI / 2, 0);
+        mesh.position.set(-5, -2, 0);
+    });
 
     const prototypeGolem = new Golem({ name: "GolemProto", speed: 10, modelPath: GolemModel, loadingManager });
     prototypeGolem.visible = false;
@@ -25,6 +32,11 @@ export const createResourcesEntities = ({ loadingManager }) => {
     prototypeWarrior.visible = false;
 
     const mapScene = new MapScene({ name: "MapScene", loadingManager, modelPath: MapSceneModel });
+    mapScene.visible = true;
+    mapScene.getComponent("model").addOnModelReadyCallback(() => {
+        const mesh = mapScene.getComponent("model").getModelInstance();
+        mesh.position.set(0, -2, 0);
+    });
 
     return {
         pyramid,
@@ -58,7 +70,7 @@ export const configLevel1 = () => {
             id: index,
             position: wp.position
         })
-        // waypoint.addSystem("debug", new DebugMeshSystem({ color: 0x00ff00, visible: true, size: 1 }));
+        // waypoint.addSystem("debug", new DebugMeshComponent({ color: 0x00ff00, visible: true, size: 1 }));
         pathWaypoints.push(waypoint)
     })
 

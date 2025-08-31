@@ -51,12 +51,12 @@ export default class WaveSpawnerSystem extends BaseSystem {
     // Asignar modelo clonado
     cloneEntity.getComponent("model").modelInstance = SkeletonUtils.clone(protoModel);
     cloneEntity.getComponent("model").gltf = protoGLTF;
-    cloneEntity.add(cloneEntity.getComponent("model").modelInstance);
+    cloneEntity.add(cloneEntity.getComponent("model").getModelInstance());
 
     // Reinicializar mixer con modelo clonado
     const animComp = cloneEntity.getComponent("animation");
     animComp.initMixer(
-      cloneEntity.getComponent("model").modelInstance,
+      cloneEntity.getComponent("model").getModelInstance(),
       protoGLTF?.animations
     );
 
@@ -65,6 +65,8 @@ export default class WaveSpawnerSystem extends BaseSystem {
     }
 
     animComp.play("walk");
+
+    cloneEntity.getComponent("model").getModelInstance().position.set(0, -1, 0);
 
     this.scene.add(cloneEntity);
     this.activeEntities.add({ waveIndex: index, entity: cloneEntity });

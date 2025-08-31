@@ -1,15 +1,19 @@
 import BaseEntity from "@three/base/BaseEntity";
+import ModelComponent from "@three/components/ModelComponent";
 
 export default class Pyramid extends BaseEntity {
     constructor(config = {}) {
         const {
             name = "Pyramid",
-            position = new Vector3(0, 0, 0),
+            loadingManager,
+            modelPath,
         } = config
 
         super({ name });
-        this.position.copy(position);
+
+        this
+            .addComponent("model", new ModelComponent({ loadingManager, path: modelPath }))
 
     }
- 
+
 }

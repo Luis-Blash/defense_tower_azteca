@@ -1,7 +1,7 @@
 import { Mesh, MeshBasicMaterial, SphereGeometry } from "three";
 import BaseSystem from "@three/base/BaseSystem";
 
-export default class DebugMeshSystem extends BaseSystem {
+export default class DebugMeshComponent extends BaseSystem {
     constructor({ color = 0xffff00, size = 1, segments = [10, 6], visible = false } = {}) {
         super();
         this.color = color;
