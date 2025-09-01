@@ -16,7 +16,7 @@ export default class ClickRespawnSystem extends BaseSystem {
 
 
 
-    mouseClick(createClickTower) {
+    mouseClick(createClickTower, projectileRespawnSystem) {
         this._onClick = ({ intersects, objectClickByName }) => {
             const intersection = intersects[0];
             if (!intersection) return;
@@ -24,7 +24,7 @@ export default class ClickRespawnSystem extends BaseSystem {
             if (!objectClickByName.includes(clickedObject.name)) return;
 
             const clickPoint = intersection.point;
-            const tower = createClickTower(this.quetzalcoatl, clickPoint);
+            const tower = createClickTower(this.quetzalcoatl, clickPoint, projectileRespawnSystem);
             this.spawnedTowers.set(`tower_${this.count}`, tower);
             this.scene.add(tower);
             this.count++;

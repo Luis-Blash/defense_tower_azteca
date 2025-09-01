@@ -1,7 +1,7 @@
 import BaseEntity from "@three/base/BaseEntity";
 import ProjectileComponent from "@three/components/ProjectileComponent";
 import ProjectileMeshComponent from "@three/components/ProjectileMeshComponent";
-import ProjectileMovementSystem from "@three/systems/ProjectileMovementSyste";
+import ProjectileMovementSystem from "@three/systems/ProjectileMovementSystem";
 
 
 export default class Projectile extends BaseEntity {

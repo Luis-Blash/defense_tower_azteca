@@ -98,7 +98,7 @@ export const configLevel1 = () => {
     }
 }
 
-export const createClickTower = (prototypeQuetzalcoatl, position) => {
+export const createClickTower = (prototypeQuetzalcoatl, position, projectileRespawnSystem) => {
 
     const protoModel = prototypeQuetzalcoatl.getComponent("model").getModelInstance();
     const protoGLTF = prototypeQuetzalcoatl.getComponent("model").getGLTF()
@@ -116,13 +116,10 @@ export const createClickTower = (prototypeQuetzalcoatl, position) => {
     );
     tower.getComponent("model").getModelInstance().position.set(0, -1, 0);
     tower.getComponent("model").getModelInstance().scale.set(2, 2, 2);
-
+    tower.getSystem("attack").setActionProjectiles(({entity, target}) => {
+        projectileRespawnSystem.addProjectile({ProjectileClass: Projectile, entity, target})
+    })
     return tower
 }
 
 
-export const createProjectile = () => {
-    const projectile = new Projectile({ speed: 10 })
-    projectile.getSystem("movement").setDirection(new Vector3(1, 0, 0))
-    return projectile
-}

@@ -6,6 +6,7 @@ import SceneActivitySystem from "@three/systems/SceneActivitySystem";
 import WaveSpawnerSystem from "@three/systems/WaveSpawnerSystem";
 import MouseEventsSystem from "@three/systems/MouseEventsSystem";
 import ClickRespawnSystem from "@three/systems/ClickRespawnSystem";
+import ProjectileRespawSystem from "@three/systems/ProjectileRespawSystem";
 
 export default class NivelOne extends BaseScene {
 	constructor(configApp, props) {
@@ -50,6 +51,7 @@ export default class NivelOne extends BaseScene {
 			}))
 			.addSystem("mouseEvents", new MouseEventsSystem())
 			.addSystem("clickRespawn", new ClickRespawnSystem())
+			.addSystem("projectileRespawn", new ProjectileRespawSystem())
 
 		this
 			.getSystem("sceneActivity")

@@ -15,5 +15,6 @@ export default class ProjectileMovementSystem extends BaseSystem {
         if (!this.direction) return;
         const speed = this.entity.getComponent("projectile").speed;
         this.entity.position.add(this.direction.clone().multiplyScalar(delta * speed));
+        
     }
 }

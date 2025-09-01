@@ -8,6 +8,10 @@ export default class TowerAttackSystem extends BaseSystem {
         this.isAttacking = false;
     }
 
+    setActionProjectiles(actionProjectiles) {
+        this.actionProjectiles = actionProjectiles
+    }
+
     update(delta) {
         const detectionSys = this.entity.getSystem("detection");
         const attackComp = this.entity.getComponent("attackRange");
@@ -52,8 +56,12 @@ export default class TowerAttackSystem extends BaseSystem {
         // Reproducir animación
         animationComp.play("atack");
         // Aplicar daño inmediatamente o con delay según prefieras
-        const attackComp = this.entity.getComponent("attackRange");
-        this.currentTarget.getComponent("health").takeDamage(attackComp.getDamage());
+        if(this.actionProjectiles) {
+            this.actionProjectiles({
+                entity: this.entity,
+                target: this.currentTarget
+            })
+        }
     }
 
     _stopAttack(animationComp) {
