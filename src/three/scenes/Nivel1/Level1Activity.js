@@ -32,6 +32,8 @@ export default class Level1Activity extends BaseActivityScene {
         const enemies = this.scene.getSystem("waveSpawner").getActiveEntities();
         this.scene.getSystem("clickRespawn").setWaveSpawnerSystem(enemies)
         this.scene.getSystem("clickRespawn").update(delta)
+
+        this.scene.getSystem("projectileRespawn").setEnemies(enemies)
         this.scene.getSystem("projectileRespawn").update(delta)
     }
     

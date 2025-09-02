@@ -9,6 +9,8 @@ export default class HealthComponent extends BaseComponent {
 
     takeDamage(damage) {
         this.life -= damage;
+        console.log(this.life);
+        
         if (this.life <= 0) {
             this.life = 0;
             if (this.entity?.die) this.entity.die();

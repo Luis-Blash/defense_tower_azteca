@@ -7,10 +7,22 @@ export default class ProjectileComponent  extends BaseComponent{
         const { 
             speed = 2,
             damage = 10,
-            maxDistance = 100,
+            radius = 0.75,
          } = config
         this.speed = speed
         this.damage = damage
-        this.maxDistance = maxDistance
+        this.radius = radius;
+    }
+
+    getRadius() {
+        return this.radius;
+    }
+
+    getDamage() {
+        return this.damage;
+    }
+
+    getSpeed() {
+        return this.speed;
     }
 }

@@ -7,6 +7,7 @@ import WaveSpawnerSystem from "@three/systems/WaveSpawnerSystem";
 import MouseEventsSystem from "@three/systems/MouseEventsSystem";
 import ClickRespawnSystem from "@three/systems/ClickRespawnSystem";
 import ProjectileRespawSystem from "@three/systems/ProjectileRespawSystem";
+import { Color } from "three";
 
 export default class NivelOne extends BaseScene {
 	constructor(configApp, props) {
@@ -24,6 +25,8 @@ export default class NivelOne extends BaseScene {
 		this.camera.orbit.controls.enableZoom = false
 		this.camera.orbit.controls.enablePan = true
 		this.camera.orbit.controls.enableRotate = true
+
+		this.background = new Color("#000000")
 
 		const entites = createResourcesEntities({ loadingManager: this.loadingManager })
 		for (const key in entites) {
