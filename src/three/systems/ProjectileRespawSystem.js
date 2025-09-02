@@ -12,14 +12,20 @@ export default class ProjectileRespawSystem extends BaseSystem {
         this.enemies = enemies
     }
 
+    onRemoveScene(object) {
+        this.entity.remove(object)
+        this.projectiles.delete(object.name)
+    }
+
     addProjectile({ ProjectileClass, entity, target }) {
+        const nameProjectile = `projectile_${this.projectileCount}`
         const entityDamage = entity.getComponent("attackRange").getDamage()
-        const projectile = new ProjectileClass({ speed: 10, damage: entityDamage })
+        const projectile = new ProjectileClass({ name: nameProjectile, speed: 10, damage: entityDamage, onRemoveScene: this.onRemoveScene.bind(this) })
         projectile.getSystem("movement").setDirection(target.position.clone().sub(entity.position).normalize())
         projectile.position.set(entity.position.x, entity.position.y, entity.position.z)
         this.entity.add(projectile)
 
-        this.projectiles.set(`projectile_${this.projectileCount}`, { entity: projectile});
+        this.projectiles.set(nameProjectile, { entity: projectile});
         this.projectileCount++;
     }
 

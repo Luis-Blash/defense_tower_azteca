@@ -5,7 +5,7 @@ export default class ProjectileMovementSystem extends BaseSystem {
     constructor() {
         super();
         this.direction = null;
-        this.maxDistance = 100;
+        this.maxDistance = 50;
     }
 
     setDirection(direction) {

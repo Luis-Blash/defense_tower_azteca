@@ -7,13 +7,16 @@ import ProjectileMovementSystem from "@three/systems/ProjectileMovementSystem";
 
 export default class Projectile extends BaseEntity {
     constructor(config = {}) {
-        super({ name: "projectile" });
-
         const { 
+            name = "projectile",
             speed = 2,
             radius = 0.75,
             damage = 10,
+            onRemoveScene = () => {}
         } = config
+        
+        super({ name });
+        this.onRemoveScene = onRemoveScene
 
         this
             .addComponent("projectile", new ProjectileComponent({ speed, radius, damage }))
@@ -24,6 +27,7 @@ export default class Projectile extends BaseEntity {
 
     destroy() {
         this.deactivate()
+        this.onRemoveScene(this)
     }
 
     update(delta) {
