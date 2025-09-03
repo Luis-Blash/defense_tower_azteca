@@ -33,6 +33,7 @@ export default class Projectile extends BaseEntity {
     update(delta) {
         if (!this.active) return;
         this.getSystem("movement").update(delta)
+        this.getComponent("projectileMesh").update(delta)
         this.getSystem("collision").update(delta)
     }
 }
