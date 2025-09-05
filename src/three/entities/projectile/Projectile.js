@@ -3,6 +3,7 @@ import ProjectileComponent from "@three/components/ProjectileComponent";
 import ProjectileMeshComponent from "@three/components/ProjectileMeshComponent";
 import ProjectileCollisionSystem from "@three/systems/ProjectileCollisionSystem";
 import ProjectileMovementSystem from "@three/systems/ProjectileMovementSystem";
+import { fireballMaterial } from "@three/shaders";
 
 
 export default class Projectile extends BaseEntity {
@@ -20,7 +21,7 @@ export default class Projectile extends BaseEntity {
 
         this
             .addComponent("projectile", new ProjectileComponent({ speed, radius, damage }))
-            .addComponent("projectileMesh", new ProjectileMeshComponent())
+            .addComponent("projectileMesh", new ProjectileMeshComponent(fireballMaterial()))
             .addSystem("movement", new ProjectileMovementSystem())
             .addSystem("collision", new ProjectileCollisionSystem())
     }

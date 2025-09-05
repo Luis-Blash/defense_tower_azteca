@@ -1,29 +1,27 @@
-import { Mesh, SphereGeometry } from "three";
+import { Mesh, MeshBasicMaterial, SphereGeometry } from "three";
 import BaseComponent from "@three/base/BaseComponent";
-import FireballMaterialShader from "@three/shaders/FireBall/FireballMaterial";
 
 
 export default class ProjectileMeshComponent extends BaseComponent {
-    constructor() {
+    constructor(material = null) {
         super();
+        this.material = material;
     }
 
     start(entity) {
         const radius = entity.getComponent("projectile").getRadius();
         const geometry = new SphereGeometry(radius, 32, 16);
-        const material = new FireballMaterialShader({ 
-            radius: 1.0, 
-            intensity: 1.5,
-            noiseScale: 1.5,
-            speed: 1.0,
-            glow: 0.6,
-        });
-        this.material = material;
-        const mesh = new Mesh(geometry, material);
-        entity.add(mesh);
+        if(this.material) {
+            this.mesh = new Mesh(geometry, this.material);
+        } else {
+            this.mesh = new Mesh(geometry, new MeshBasicMaterial({ color: 0xff0000 }));
+        }
+        entity.add(this.mesh);
     }
 
     update(delta) {
-        this.material.update(delta);
+        if(this.material && this.material.uniforms && this.material.uniforms.uTime){
+            this.material.uniforms.uTime.value += delta;
+        }
     }
 }

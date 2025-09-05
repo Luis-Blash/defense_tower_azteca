@@ -104,7 +104,7 @@ export const createClickTower = (prototypeQuetzalcoatl, position, projectileResp
     const protoGLTF = prototypeQuetzalcoatl.getComponent("model").getGLTF()
     
 
-    const tower = new Quetzalcoatl({ name: "Quetzalcoatl", radius: 8,damage: 50, debugRange: true });
+    const tower = new Quetzalcoatl({ name: "Quetzalcoatl", radius: 8,damage: 50, debugRange: false });
     tower.position.set(position.x, 0, position.z);
     tower.getComponent("model").modelInstance = SkeletonUtils.clone(protoModel);
     tower.getComponent("model").gltf = protoGLTF;
