@@ -4,6 +4,7 @@ import BaseSystem from "@three/base/BaseSystem";
 export default class WaveSpawnerSystem extends BaseSystem {
   constructor({ scene, prototypes = {}, waves = [], pathWaypoints = [], goal = null }) {
     super();
+    this.isActive = false;
     this.scene = scene;
     this.prototypes = prototypes;
     this.waves = waves;
@@ -17,11 +18,13 @@ export default class WaveSpawnerSystem extends BaseSystem {
     this.activeEntities = new Set();
   }
   start() {
+    if(this.waves.length === 0) return;
+    this.isActive = true;
     this.waves.forEach(w => (this.timers[w.name] = { elapsed: 0, spawned: 0 }));
   }
 
   update(delta) {
-
+    if (!this.isActive) return;
     this.waves.forEach((w, index) => {
       const t = this.timers[w.name];
       t.elapsed += delta * 1000;

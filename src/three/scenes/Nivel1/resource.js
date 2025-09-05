@@ -15,6 +15,7 @@ import Waypoint from "@three/entities/waypoint/Waypoint";
 import MapScene from "@three/entities/maps/MapScene";
 import Quetzalcoatl from "@three/entities/towers/Quetzalcoatl";
 import Projectile from "@three/entities/projectile/Projectile";
+// import DebugMeshComponent from "@three/components/DebugMeshComponent";
 
 
 export const createResourcesEntities = ({ loadingManager }) => {
@@ -64,10 +65,10 @@ export const createLight = () => {
 export const configLevel1 = () => {
     const pathWaypoints = []
     const waypoints = [
-        { position: new Vector3(8, 0, -3) },
-        { position: new Vector3(5, 0, 2) },
-        { position: new Vector3(0, 0, 5) },
-        { position: new Vector3(-5, 0, 5) },
+        { position: new Vector3(21.387181533518756, 0, -3) },
+        { position: new Vector3(10.513843791318756, 0, -6.018776605171061) },
+        { position: new Vector3(4.8242464675604175, 0, 0.7550528217102155) },
+        { position: new Vector3(-2.299838995023798, 0, 5) },
         { position: new Vector3(-10, 0, 0) },
     ];
 
@@ -77,6 +78,7 @@ export const configLevel1 = () => {
             id: index,
             position: wp.position
         })
+        // waypoint.addComponent("debug", new DebugMeshComponent({ color: 0xff0000, size: 1, segments: [10, 6], visible: true }))
         pathWaypoints.push(waypoint)
     })
 

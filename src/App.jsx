@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import './App.css'
 import APPThree from '@three/core/APPThree';
 import Loading3D from '@components/Loading3D';
+import WrapperUI from '@components/WrapperUI';
 
 function App() {
 
@@ -13,27 +14,21 @@ function App() {
       const container = containerAppThree.current;
       const app = new APPThree(container);
       app.onResized();
-
-      // return () => {
-      // 	app.cleanup();
-      // };
     }
   }, [])
 
   return (
-    <>
-      <div className='h-dvh w-dvw relative'>
+    <WrapperUI>
 
-        <Loading3D />
+      <Loading3D />
 
-        {/* canvas */}
-        <div className="w-full h-full">
-          <div ref={containerAppThree} id="container" className="h-full w-full"></div>
-        </div>
-
-
+      {/* canvas */}
+      <div className="w-full h-full">
+        <div ref={containerAppThree} id="container" className="h-full w-full"></div>
       </div>
-    </>
+
+    </WrapperUI>
+
   )
 }
 
