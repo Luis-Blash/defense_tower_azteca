@@ -1,4 +1,6 @@
 import BaseScene from "@three/base/BaseScene";
+import { EVENTS } from "@services/Observer";
+import { actionsEventEmitter } from "./actionEventEmitter";
 import { createLight, createResourcesEntities } from "./resource";
 import Level1Activity from "./Level1Activity";
 
@@ -7,6 +9,7 @@ import WaveSpawnerSystem from "@three/systems/WaveSpawnerSystem";
 import MouseEventsSystem from "@three/systems/MouseEventsSystem";
 import ClickRespawnSystem from "@three/systems/ClickRespawnSystem";
 import ProjectileRespawSystem from "@three/systems/ProjectileRespawSystem";
+import EvenEmitterSystem from "@three/systems/EvenEmitterSystem";
 
 
 export default class NivelOne extends BaseScene {
@@ -53,11 +56,15 @@ export default class NivelOne extends BaseScene {
 			.addSystem("mouseEvents", new MouseEventsSystem())
 			.addSystem("clickRespawn", new ClickRespawnSystem())
 			.addSystem("projectileRespawn", new ProjectileRespawSystem())
+			.addSystem("evenEmitter", new EvenEmitterSystem(EVENTS.nivelOne.actionEmitter))
 
 		this
 			.getSystem("sceneActivity")
 			.registerActivity(1, Level1Activity)
 			.switchTo(activity)
+			
+
+		this.getSystem("evenEmitter").setActionRegister((data) => actionsEventEmitter({...data, scene: this}))
 	}
 
 	update(delta) {

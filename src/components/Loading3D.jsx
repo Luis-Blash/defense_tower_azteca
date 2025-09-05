@@ -17,7 +17,7 @@ const Loading3D = () => {
     if (!loader) return null
 
     return (
-        <div className='bg-[#0000003e] absolute z-20 top-0 left-0 h-full w-full flex items-center justify-center'>
+        <div className='bg-[#0000003e] fixed z-20 top-0 left-0 h-full w-full flex items-center justify-center'>
             <p>Loading {percent}%...</p>
         </div>
     )

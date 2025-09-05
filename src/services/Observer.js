@@ -14,30 +14,9 @@ export const EVENTS = {
 		onLoadHdri: "onLoadHdri",
 		onLoadReadyScene: "onLoadReadyScene",
 	},
-	voiceAudio: {
-		initScene: "initScene",
-		voicePlay: "voicePlay",
-		voiceStop: "voiceStop"
-	},
-	ambientSound: {
-		play: "playAmbientSound"
-	},
-	stepsDialog: {
-		nextStep: "nextStep",
-		hiddenUIStep: "hiddenUIStep"
-	},
-	momento1_activity: {
-		action_activity: "action_activity"
-	},
-	momento2_activity: {
-		action_activity: "action_activity"
-	},
-	momento3_activity: {
-		action_activity: "action_activity"
-	},
-	momento4_activity: {
-		action_activity: "action_activity"
-	},
+	nivelOne: {
+		actionEmitter: "nivelOneActionEmitter"
+	}
 };
 
 const ObserverEmitter = new EventEmitter();
