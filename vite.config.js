@@ -17,6 +17,8 @@ export default defineConfig({
       '@': path.resolve(__dirname, 'src'),
       '@assets': path.resolve(__dirname, 'src/assets'),
       '@components': path.resolve(__dirname, 'src/components'),
+      '@container': path.resolve(__dirname, 'src/container'),
+      '@presentation': path.resolve(__dirname, 'src/presentation'),
       '@hooks': path.resolve(__dirname, 'src/hooks'),
       '@pages': path.resolve(__dirname, 'src/pages'),
       '@services': path.resolve(__dirname, 'src/services'),

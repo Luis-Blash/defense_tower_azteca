@@ -7,7 +7,7 @@ export default class ClickRespawnSystem extends BaseSystem {
         this.spawnedTowers = new Map();
         this.count = 0;
         this._onClick = null;
-        this.canActivateTower = true;
+        this.canActivateTower = false;
     }
 
     start(scene) {
