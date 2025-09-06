@@ -1,33 +1,50 @@
-import banner from "@assets/images/banner.png"
-import Button from "./Button"
 import { useState } from "react"
 import ObserverEmitter, { EVENTS } from "@services/Observer"
+import Button from "./Button"
+import Header from "./Header"
+import ContainerGame from "./ContainerGame"
 
 const WrapperUI = ({ children }) => {
 
   const [start, setStart] = useState(false)
+  const [enemies, setEnemies] = useState(10)
+  const [resetCooldown, setResetCooldown] = useState(false)
+
   const handleStart = () => {
-    ObserverEmitter.emit(EVENTS.nivelOne.actionEmitter, {"action": "start", params: {}})
+    ObserverEmitter.emit(EVENTS.nivelOne.actionEmitter, { "action": "start", params: {} })
     setStart(true)
+    setResetCooldown(true)
+  }
+
+  ObserverEmitter.on(EVENTS.listen.getEnemies, (value = 0) => {
+    setEnemies(value)
+  })
+
+  ObserverEmitter.on(EVENTS.listen.actionTower, (value = 0) => {
+    setResetCooldown(true)
+  })
+
+  const handleTower = () => {
+    ObserverEmitter.emit(EVENTS.listen.actionTower, { "action": "tower", params: {} })
+    setResetCooldown(false)
   }
 
   return (
     <div className='w-dvw h-dvh relative bg-[#E7D5A1]'>
-      <header className="w-dvw h-[150px] flex justify-center items-center">
-        <div className="w-[248px] h-[87px] relative">
-          <img className="w-full h-full object-contain absolute z-10 top-0 left-0" src={banner} alt="banner" />
-          <div className="absolute z-20 top-0 left-0 w-full h-full text-white flex flex-col justify-center items-center text-[14px]">
-            <p>Aztec Defenders</p>
-            <p>of the</p>
-            <p>Templo Mayor</p>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       <main className="w-dvw h-[calc(100%-250px)] relative">
         {children}
         <div className={`${start && 'hidden'} absolute z-20 bottom-5 left-1/2 -translate-x-1/2`}>
           <Button onClick={handleStart} text="Start" />
+        </div>
+        <div className={`${!start && 'hidden'} absolute z-20 bottom-5 left-1/2 -translate-x-1/2 w-full`}>
+          <ContainerGame
+            startGame={start}
+            enemies={enemies}
+            resetCooldown={resetCooldown}
+            handleTower={handleTower}
+          />
         </div>
       </main>
 

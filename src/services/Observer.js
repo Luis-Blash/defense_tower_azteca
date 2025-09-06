@@ -16,6 +16,10 @@ export const EVENTS = {
 	},
 	nivelOne: {
 		actionEmitter: "nivelOneActionEmitter"
+	},
+	listen:{
+		getEnemies: "getEnemies",
+		actionTower: "actionTower"
 	}
 };
 
