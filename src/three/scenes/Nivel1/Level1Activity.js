@@ -24,9 +24,10 @@ export default class Level1Activity extends BaseActivityScene {
 
         this.scene.getSystem("waveSpawner").setPathWaypoints(pathWaypoints)
         this.scene.getSystem("waveSpawner").setWaves(waves)
-        // this.scene.getSystem("waveSpawner").start()
 
-        this.scene.getSystem("clickRespawn").mouseClick(createClickTower, this.scene.getSystem("projectileRespawn"))
+        this.scene.getSystem("clickRespawn").mouseClick(
+            createClickTower, 
+            this.scene.getSystem("projectileRespawn"))
     }
 
     update(delta) {

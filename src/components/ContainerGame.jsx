@@ -1,7 +1,7 @@
 import ContainerInfo from "./ContainerInfo"
 import CooldownBar from "./CooldownBar"
 
-const ContainerGame = ({startGame = false, enemies = 0, resetCooldown = false, handleTower = () => {}}) => {
+const ContainerGame = ({startGame = false, resetCooldown = false, handleTower = () => {}}) => {
     return (
         <div className='w-full xl:w-[166px] px-6 h-[80px] flex items-center justify-between'>
             <ContainerInfo>
@@ -9,8 +9,8 @@ const ContainerGame = ({startGame = false, enemies = 0, resetCooldown = false, h
             </ContainerInfo>
             <ContainerInfo>
                 <div className="w-full h-full py-2 flex flex-col items-center justify-center gap-1 text-white font-semibold text-[14px]">
-                    <p>Enemies restantes</p>
-                    <p>{enemies}</p>
+                    <p>Enemies total</p>
+                    <p>3</p>
                 </div>
             </ContainerInfo>
         </div>

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-const COOLDOWNTIME = 10;// 10 seconds
+const COOLDOWNTIME = 5;// 10 seconds
 
 const CooldownBar = ({ startGame = false, resetCooldown = false, handleTower = () => { } }) => {
     const [percent, setPercent] = useState(0);
@@ -8,9 +8,14 @@ const CooldownBar = ({ startGame = false, resetCooldown = false, handleTower = (
 
     const cooldownMs = Math.max(0, Number(COOLDOWNTIME)) * 1000;
 
+
+    useEffect(() => {
+        if (!resetCooldown) return;
+        setPercent(0);
+    }, [resetCooldown]);
+
     useEffect(() => {
         if (!startGame) return;
-        if (!resetCooldown) return;
 
         if (cooldownMs === 0) {            
             setPercent(100);
@@ -18,8 +23,8 @@ const CooldownBar = ({ startGame = false, resetCooldown = false, handleTower = (
         }
 
         if (percent >= 100) {
+            handleTower()
             if (intervalRef.current) {
-                handleTower()
                 clearInterval(intervalRef.current);
                 intervalRef.current = null;
             }
@@ -50,7 +55,7 @@ const CooldownBar = ({ startGame = false, resetCooldown = false, handleTower = (
                 intervalRef.current = null;
             }
         };
-    }, [percent, cooldownMs, startGame, resetCooldown]);
+    }, [percent, cooldownMs, startGame]);
 
     return (
         <div

@@ -1,3 +1,4 @@
+import ObserverEmitter, { EVENTS } from "@services/Observer";
 import BaseSystem from "@three/base/BaseSystem";
 
 export default class ClickRespawnSystem extends BaseSystem {
@@ -6,6 +7,7 @@ export default class ClickRespawnSystem extends BaseSystem {
         this.spawnedTowers = new Map();
         this.count = 0;
         this._onClick = null;
+        this.canActivateTower = true;
     }
 
     start(scene) {
@@ -14,12 +16,17 @@ export default class ClickRespawnSystem extends BaseSystem {
         this.quetzalcoatl = this.scene.getEntity("prototypeQuetzalcoatl")
     }
 
-
+    setCanActivateTower(value) {
+        this.canActivateTower = value;
+    }
 
     mouseClick(createClickTower, projectileRespawnSystem) {
         this._onClick = ({ intersects, objectClickByName }) => {
             const intersection = intersects[0];
             if (!intersection) return;
+            if (!this.canActivateTower) return;
+            this.canActivateTower = false;
+            ObserverEmitter.emit(EVENTS.nivelOne.actionEmitter, { "action": "resetCooldown", params: {} })
             const clickedObject = intersection.object;
             if (!objectClickByName.includes(clickedObject.name)) return;
 

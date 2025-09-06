@@ -19,7 +19,7 @@ export const EVENTS = {
 	},
 	listen:{
 		getEnemies: "getEnemies",
-		actionTower: "actionTower"
+		resetCooldown: "resetCooldown"
 	}
 };
 

@@ -7,25 +7,19 @@ import ContainerGame from "./ContainerGame"
 const WrapperUI = ({ children }) => {
 
   const [start, setStart] = useState(false)
-  const [enemies, setEnemies] = useState(10)
   const [resetCooldown, setResetCooldown] = useState(false)
 
   const handleStart = () => {
     ObserverEmitter.emit(EVENTS.nivelOne.actionEmitter, { "action": "start", params: {} })
     setStart(true)
-    setResetCooldown(true)
   }
 
-  ObserverEmitter.on(EVENTS.listen.getEnemies, (value = 0) => {
-    setEnemies(value)
-  })
-
-  ObserverEmitter.on(EVENTS.listen.actionTower, (value = 0) => {
+  ObserverEmitter.on(EVENTS.listen.resetCooldown, () => {
     setResetCooldown(true)
   })
 
-  const handleTower = () => {
-    ObserverEmitter.emit(EVENTS.listen.actionTower, { "action": "tower", params: {} })
+  const handleTower = () => {    
+    ObserverEmitter.emit(EVENTS.nivelOne.actionEmitter, { "action": "tower", params: {} })
     setResetCooldown(false)
   }
 
@@ -41,7 +35,6 @@ const WrapperUI = ({ children }) => {
         <div className={`${!start && 'hidden'} absolute z-20 bottom-5 left-1/2 -translate-x-1/2 w-full`}>
           <ContainerGame
             startGame={start}
-            enemies={enemies}
             resetCooldown={resetCooldown}
             handleTower={handleTower}
           />
