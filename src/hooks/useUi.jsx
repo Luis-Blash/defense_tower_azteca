@@ -28,6 +28,11 @@ const useUi = () => {
             setResetCooldown(true)
         })
 
+        ObserverEmitter.on(EVENTS.listen.getEnemies, () => {
+            console.log("getEnemies");
+            
+        })
+
         return () => {
             ObserverEmitter.off(EVENTS.listen.resetCooldown)
         }

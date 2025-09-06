@@ -1,5 +1,4 @@
 import BaseScene from "@three/base/BaseScene";
-import { EVENTS } from "@services/Observer";
 import { actionsEventEmitter } from "./actionEventEmitter";
 import { createLight, createResourcesEntities } from "./resource";
 import Level1Activity from "./Level1Activity";
@@ -10,6 +9,7 @@ import MouseEventsSystem from "@three/systems/MouseEventsSystem";
 import ClickRespawnSystem from "@three/systems/ClickRespawnSystem";
 import ProjectileRespawSystem from "@three/systems/ProjectileRespawSystem";
 import EvenEmitterSystem from "@three/systems/EvenEmitterSystem";
+import SelectiveObserverSystem from "@three/systems/EvenEmitterSystem";
 
 
 export default class NivelOne extends BaseScene {
@@ -40,14 +40,14 @@ export default class NivelOne extends BaseScene {
 
 	createECS(props) {
 		const { activity = 1 } = props
-		
+
 		this
 			.addSystem("sceneActivity", new SceneActivitySystem())
 			.addSystem("waveSpawner", new WaveSpawnerSystem({
 				scene: this,
-				prototypes: { 
-					Golem: this.getEntity("prototypeGolem"), 
-					Warrior: this.getEntity("prototypeWarrior") 
+				prototypes: {
+					Golem: this.getEntity("prototypeGolem"),
+					Warrior: this.getEntity("prototypeWarrior")
 				},
 				waves: [],
 				pathWaypoints: [],
@@ -56,15 +56,24 @@ export default class NivelOne extends BaseScene {
 			.addSystem("mouseEvents", new MouseEventsSystem())
 			.addSystem("clickRespawn", new ClickRespawnSystem())
 			.addSystem("projectileRespawn", new ProjectileRespawSystem())
-			.addSystem("evenEmitter", new EvenEmitterSystem(EVENTS.nivelOne.actionEmitter))
+			.addSystem("gameObserver", new SelectiveObserverSystem())
 
 		this
 			.getSystem("sceneActivity")
 			.registerActivity(1, Level1Activity)
 			.switchTo(activity)
-			
 
-		this.getSystem("evenEmitter").setActionRegister((data) => actionsEventEmitter({...data, scene: this}))
+		this.getSystem("gameObserver")
+			.setListenEvents([
+				"nivelOne.actionEmitter",
+			])
+			.setEmitEvents([
+				"listen.getEnemies",
+				"listen.resetCooldown"
+			])
+			.setActionRegister((data) => actionsEventEmitter({ ...data, scene: this }))
+
+		this.getSystem("gameObserver").start()
 	}
 
 	update(delta) {

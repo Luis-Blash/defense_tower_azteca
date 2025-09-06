@@ -1,7 +1,5 @@
-import ObserverEmitter, { EVENTS } from "@services/Observer"
-
-const resetCooldown = () => {
-    ObserverEmitter.emit(EVENTS.listen.resetCooldown)
+const resetCooldown = ({ scene = null }) => {
+    scene.getSystem("gameObserver").emit("listen.resetCooldown", { action: "start" })
 }
 
 const pushTower = ({ scene = null }) => {
@@ -22,7 +20,7 @@ export const actionsEventEmitter = ({ action = "", params = {}, scene = null }) 
             pushTower({ scene })
             break;
         case "resetCooldown":
-            resetCooldown()
+            resetCooldown({ scene })
             break;
         default:
             break;
