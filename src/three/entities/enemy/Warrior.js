@@ -1,6 +1,7 @@
 // Warrior.js
 import BaseEntity from "@three/base/BaseEntity";
 import AnimationComponent from "@three/components/AnimationComponent";
+import HealthBarComponent from "@three/components/HealthBarComponent";
 import HealthComponent from "@three/components/HealthComponent";
 import ModelComponent from "@three/components/ModelComponent";
 import MovementComponent from "@three/components/MovementComponent";
@@ -34,11 +35,18 @@ export default class Warrior extends BaseEntity {
             .addComponent("movement", new MovementComponent({ speed }))
             .addComponent("model", new ModelComponent({ loadingManager, path: modelPath }))
             .addComponent("animation", new AnimationComponent())
+            .addComponent("healthBar", new HealthBarComponent({
+                showText: false,
+                width: 50,
+                height: 6,
+                offsetY: 4.0
+            }))
             .addSystem("waypoint", new WaypointSystem())
             .addSystem("anim", new AnimationSystem())
     }
 
     die() {
+        this.getComponent("healthBar").hide()
         console.log(`${this.name} destruido`);
         this.visible = false;
         this.deactivate();
@@ -47,5 +55,6 @@ export default class Warrior extends BaseEntity {
     update(delta) {
         this.getSystem("waypoint").move(delta)
         this.getSystem("anim").update(delta)        
+        this.getComponent("healthBar").update(delta)
     }
 }

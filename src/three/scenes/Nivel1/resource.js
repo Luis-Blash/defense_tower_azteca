@@ -88,8 +88,8 @@ export const configLevel1 = () => {
             spawnInterval: 3000,
             maxEnemies: 3,
             enemiesTypes: [
-                { EnemyClass: Golem, config: { speed: 1.5, life: 120 } },
-                { EnemyClass: Warrior, config: { speed: 3, life: 100 } },
+                { EnemyClass: Golem, config: { speed: 1.5, life: 120, maxLife: 120 } },
+                { EnemyClass: Warrior, config: { speed: 3, life: 100, maxLife: 100 } },
             ]
         }
     ]

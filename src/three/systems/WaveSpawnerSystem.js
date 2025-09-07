@@ -1,6 +1,7 @@
 import * as SkeletonUtils from "three/examples/jsm/utils/SkeletonUtils.js";
 import BaseSystem from "@three/base/BaseSystem";
 import SelectiveObserverSystem from "./EvenEmitterSystem";
+import HealthBarComponent from "@three/components/HealthBarComponent";
 
 export default class WaveSpawnerSystem extends BaseSystem {
   constructor({ scene, prototypes = {}, waves = [], pathWaypoints = [], goal = null }) {
@@ -83,6 +84,9 @@ export default class WaveSpawnerSystem extends BaseSystem {
     cloneEntity
       .getSystem("gameObserver")
       .emit("listen.getEnemies", 1)
+
+    cloneEntity.getComponent("healthBar").setCameraAndRenderer(this.scene.camera, this.scene.render)
+    cloneEntity.getComponent("healthBar").createHealthBar()
 
     this.scene.add(cloneEntity);
     this.activeEntities.add({ waveIndex: index, entity: cloneEntity });
