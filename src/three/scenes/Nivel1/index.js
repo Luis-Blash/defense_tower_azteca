@@ -25,7 +25,9 @@ export default class NivelOne extends BaseScene {
 		this.camera.rotation.set(-0.7165, -0.8622, -0.5843)
 		this.camera.orbit.controls.minPolarAngle = Math.PI / 3;
 		this.camera.orbit.controls.maxPolarAngle = Math.PI / 3;
-		this.camera.orbit.controls.enableZoom = false
+		this.camera.orbit.controls.minDistance = 10;
+		this.camera.orbit.controls.maxDistance = 80;
+		this.camera.orbit.controls.enableZoom = true
 		this.camera.orbit.controls.enablePan = true
 		this.camera.orbit.controls.enableRotate = true
 

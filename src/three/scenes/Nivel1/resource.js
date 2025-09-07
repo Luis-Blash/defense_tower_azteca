@@ -20,7 +20,7 @@ import Projectile from "@three/entities/projectile/Projectile";
 
 export const createResourcesEntities = ({ loadingManager }) => {
     const pyramid = new Pyramid({ name: "Pyramid", loadingManager, modelPath: PyramidModel })
-    pyramid.position.set(-20, 0, 0)
+    pyramid.position.set(-26, 0, 0)
     pyramid.getComponent("model").addOnModelReadyCallback(() => {
         const mesh = pyramid.getComponent("model").getModelInstance();
         mesh.scale.set(6, 6, 6);
@@ -40,6 +40,11 @@ export const createResourcesEntities = ({ loadingManager }) => {
     mapScene.getComponent("model").addOnModelReadyCallback(() => {
         const mesh = mapScene.getComponent("model").getModelInstance();
         mesh.position.set(0, -2, 0);
+        const tree = mesh.getObjectByName("arbol");
+        tree.visible = false;
+        const rock = mesh.getObjectByName("piedra_100");
+        rock.visible = false;
+        
     });
 
     const prototypeQuetzalcoatl = new Quetzalcoatl({ name: "Quetzalcoatl", loadingManager, modelPath: QuetzalcoatlModel });
@@ -88,8 +93,8 @@ export const configLevel1 = () => {
             spawnInterval: 3000,
             maxEnemies: 3,
             enemiesTypes: [
-                { EnemyClass: Golem, config: { speed: 1.5, life: 120, maxLife: 120 } },
-                { EnemyClass: Warrior, config: { speed: 3, life: 100, maxLife: 100 } },
+                { EnemyClass: Golem, config: { speed: 2.5, life: 120, maxLife: 120 } },
+                { EnemyClass: Warrior, config: { speed: 2.8, life: 100, maxLife: 100 } },
             ]
         }
     ]

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-const COOLDOWNTIME = 5;// 10 seconds
+const COOLDOWNTIME = 4;// 10 seconds
 
 const CooldownBar = ({ startGame = false, resetCooldown = false, handleTower = () => { } }) => {
     const [percent, setPercent] = useState(0);
