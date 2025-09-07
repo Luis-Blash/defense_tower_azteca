@@ -88,8 +88,8 @@ export const configLevel1 = () => {
             spawnInterval: 3000,
             maxEnemies: 3,
             enemiesTypes: [
-                { EnemyClass: Golem, config: { speed: 3, life: 200 } },
-                { EnemyClass: Warrior, config: { speed: 5, life: 100 } },
+                { EnemyClass: Golem, config: { speed: 1.5, life: 120 } },
+                { EnemyClass: Warrior, config: { speed: 3, life: 100 } },
             ]
         }
     ]
@@ -106,7 +106,7 @@ export const createClickTower = (prototypeQuetzalcoatl, position, projectileResp
     const protoGLTF = prototypeQuetzalcoatl.getComponent("model").getGLTF()
     
 
-    const tower = new Quetzalcoatl({ name: "Quetzalcoatl", radius: 8,damage: 50, debugRange: false });
+    const tower = new Quetzalcoatl({ name: "Quetzalcoatl", radius: 8,damage: 20, debugRange: false });
     tower.position.set(position.x, 0, position.z);
     tower.getComponent("model").modelInstance = SkeletonUtils.clone(protoModel);
     tower.getComponent("model").gltf = protoGLTF;

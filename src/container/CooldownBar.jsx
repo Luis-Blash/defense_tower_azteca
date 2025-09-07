@@ -63,9 +63,9 @@ const CooldownBar = ({ startGame = false, resetCooldown = false, handleTower = (
                 if (percent < 100) return;
                 setPercent(0);
             }}
-            className="w-full h-full py-2 flex flex-col items-center justify-center gap-1 text-white font-semibold text-[14px]"
+            className="w-full h-full py-2 flex flex-col items-center justify-center gap-1 text-white font-semibold text-[12px]"
         >
-            <p>Cooldown</p>
+            <p>Cooldown Tower</p>
             <div className="w-full">
                 <div className="w-full h-3 bg-white/20 rounded-full overflow-hidden mt-2">
                     <div

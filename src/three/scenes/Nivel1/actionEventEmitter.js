@@ -20,7 +20,7 @@ export const actionsEventEmitter = ({ action = "", params = {}, scene = null }) 
             pushTower({ scene })
             break;
         case "resetCooldown":
-            resetCooldown({ scene })
+            resetCooldown({ scene, params })
             break;
         default:
             break;

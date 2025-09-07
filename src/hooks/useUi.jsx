@@ -5,6 +5,7 @@ const useUi = () => {
 
     const [start, setStart] = useState(false)
     const [resetCooldown, setResetCooldown] = useState(false)
+    const [enemies, setEnemies] = useState(0)
 
     const handleStart = useCallback(
         () => {
@@ -28,13 +29,13 @@ const useUi = () => {
             setResetCooldown(true)
         })
 
-        ObserverEmitter.on(EVENTS.listen.getEnemies, () => {
-            console.log("getEnemies");
-            
+        ObserverEmitter.on(EVENTS.listen.getEnemies, (value = 0) => {
+            setEnemies(prev => prev + value)
         })
 
         return () => {
             ObserverEmitter.off(EVENTS.listen.resetCooldown)
+            ObserverEmitter.off(EVENTS.listen.getEnemies)
         }
     }, [])
 
@@ -42,6 +43,7 @@ const useUi = () => {
     return {
         start,
         resetCooldown,
+        enemies,
         handleStart,
         handleTower
     }

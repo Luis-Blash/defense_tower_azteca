@@ -1,5 +1,6 @@
 import * as SkeletonUtils from "three/examples/jsm/utils/SkeletonUtils.js";
 import BaseSystem from "@three/base/BaseSystem";
+import SelectiveObserverSystem from "./EvenEmitterSystem";
 
 export default class WaveSpawnerSystem extends BaseSystem {
   constructor({ scene, prototypes = {}, waves = [], pathWaypoints = [], goal = null }) {
@@ -18,7 +19,7 @@ export default class WaveSpawnerSystem extends BaseSystem {
     this.activeEntities = new Set();
   }
   start() {
-    if(this.waves.length === 0) return;
+    if (this.waves.length === 0) return;
     this.isActive = true;
     this.waves.forEach(w => (this.timers[w.name] = { elapsed: 0, spawned: 0 }));
   }
@@ -71,6 +72,17 @@ export default class WaveSpawnerSystem extends BaseSystem {
 
     cloneEntity.getComponent("model").getModelInstance().position.set(0, -1, 0);
     cloneEntity.getComponent("model").getModelInstance().scale.set(2, 2, 2);
+
+    cloneEntity.addSystem("gameObserver", new SelectiveObserverSystem())
+    cloneEntity.getSystem("gameObserver")
+      .setEmitEvents([
+        "listen.getEnemies",
+      ])
+      .start()
+
+    cloneEntity
+      .getSystem("gameObserver")
+      .emit("listen.getEnemies", 1)
 
     this.scene.add(cloneEntity);
     this.activeEntities.add({ waveIndex: index, entity: cloneEntity });

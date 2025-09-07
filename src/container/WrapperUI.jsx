@@ -10,6 +10,7 @@ const WrapperUI = ({ children }) => {
 
   const {
     start,
+    enemies,
     resetCooldown,
     handleStart,
     handleTower
@@ -32,9 +33,9 @@ const WrapperUI = ({ children }) => {
                 <CooldownBar startGame={start} resetCooldown={resetCooldown} handleTower={handleTower} />
               </ContainerInfo>
               <ContainerInfo>
-                <div className="w-full h-full py-2 flex flex-col items-center justify-center gap-1 text-white font-semibold text-[14px]">
+                <div className="w-full h-full py-2 flex flex-col items-center justify-center gap-1 text-white font-semibold text-[12px]">
                   <p>Enemies total</p>
-                  <p>3</p>
+                  <p>{enemies} / 3</p>
                 </div>
               </ContainerInfo>
             </div>

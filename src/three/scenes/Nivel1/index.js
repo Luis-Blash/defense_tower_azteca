@@ -68,7 +68,6 @@ export default class NivelOne extends BaseScene {
 				"nivelOne.actionEmitter",
 			])
 			.setEmitEvents([
-				"listen.getEnemies",
 				"listen.resetCooldown"
 			])
 			.setActionRegister((data) => actionsEventEmitter({ ...data, scene: this }))
