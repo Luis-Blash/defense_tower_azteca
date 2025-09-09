@@ -18,15 +18,30 @@ export default class WaveSpawnerSystem extends BaseSystem {
     this.timers = {};
 
     this.activeEntities = new Set();
+
+    this.eliminatedEntities = 0;
   }
+
   start() {
     if (this.waves.length === 0) return;
     this.isActive = true;
     this.waves.forEach(w => (this.timers[w.name] = { elapsed: 0, spawned: 0 }));
   }
 
+  gameover() {
+    this.isActive = false;
+    this.eliminatedEntities = 0;
+    this.scene.getSystem("gameObserver").emit("listen.gameOver")
+  }
+
+  resetGame() {
+    this.eliminatedEntities = 0;
+    this.activeEntities.clear();
+  }
+
   update(delta) {
     if (!this.isActive) return;
+
     this.waves.forEach((w, index) => {
       const t = this.timers[w.name];
       t.elapsed += delta * 1000;
@@ -36,9 +51,28 @@ export default class WaveSpawnerSystem extends BaseSystem {
       }
     });
 
-    this.activeEntities.forEach((entity) => {
-      entity.entity.update(delta);
+    const entitiesToRemove = [];
+
+    this.activeEntities.forEach((entityWrapper) => {
+      const entity = entityWrapper.entity;
+      if (entity.active) {
+        entity.update(delta);
+      } else {
+        entitiesToRemove.push(entityWrapper);
+      }
     });
+
+    entitiesToRemove.forEach((entityWrapper) => {
+      const entity = entityWrapper.entity;      
+      this.scene.remove(entity);
+      this.activeEntities.delete(entityWrapper);
+      this.eliminatedEntities++;
+    });
+
+    if(this.eliminatedEntities === 3){
+      this.gameover();
+    }
+
   }
 
   _spawnEnemy(wave, index) {

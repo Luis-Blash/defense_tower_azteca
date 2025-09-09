@@ -4,10 +4,12 @@ import Loading3D from "@container/Loading3D"
 
 const PageHome = () => {
   return (
-    <WrapperUI>
-      <Loading3D />
-      <CanvasThreejs />
-    </WrapperUI>
+    <div className="fixed top-0 w-full h-full">
+      <WrapperUI>
+        <Loading3D />
+        <CanvasThreejs />
+      </WrapperUI>
+    </div>
   )
 }
 

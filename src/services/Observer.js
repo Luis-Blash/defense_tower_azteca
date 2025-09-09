@@ -19,7 +19,8 @@ export const EVENTS = {
 	},
 	listen:{
 		getEnemies: "getEnemies",
-		resetCooldown: "resetCooldown"
+		resetCooldown: "resetCooldown",
+		gameOver: "gameOver"
 	}
 };
 

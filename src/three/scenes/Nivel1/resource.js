@@ -47,7 +47,7 @@ export const createResourcesEntities = ({ loadingManager }) => {
         
     });
 
-    const prototypeQuetzalcoatl = new Quetzalcoatl({ name: "Quetzalcoatl", loadingManager, modelPath: QuetzalcoatlModel });
+    const prototypeQuetzalcoatl = new Quetzalcoatl({ name: "QuetzalcoatlProto", loadingManager, modelPath: QuetzalcoatlModel });
     prototypeQuetzalcoatl.visible = false;
 
     return {

@@ -10,6 +10,10 @@ const startGame = ({ scene = null }) => {
     scene.getSystem("waveSpawner").start()
 }
 
+const resetGame = ({ scene = null }) => {
+    scene.getSystem("clickRespawn").resetGame()
+    scene.getSystem("waveSpawner").resetGame()
+}
 
 export const actionsEventEmitter = ({ action = "", params = {}, scene = null }) => {    
     switch (action) {
@@ -21,6 +25,9 @@ export const actionsEventEmitter = ({ action = "", params = {}, scene = null }) 
             break;
         case "resetCooldown":
             resetCooldown({ scene, params })
+            break;
+        case "resetGame":
+            resetGame({ scene, params })
             break;
         default:
             break;

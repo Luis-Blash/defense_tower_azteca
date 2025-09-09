@@ -5,6 +5,7 @@ const useUi = () => {
 
     const [start, setStart] = useState(false)
     const [resetCooldown, setResetCooldown] = useState(false)
+    const [gameOver, setGameOver] = useState(false)
     const [enemies, setEnemies] = useState(0)
 
     const handleStart = useCallback(
@@ -23,6 +24,14 @@ const useUi = () => {
         [],
     )
 
+    const handleGameOver = useCallback(
+        () => {
+            setGameOver(false)
+            ObserverEmitter.emit(EVENTS.nivelOne.actionEmitter, { "action": "resetGame", params: {} })
+        },
+        [],
+    )
+
     useEffect(() => {
         
         ObserverEmitter.on(EVENTS.listen.resetCooldown, () => {
@@ -33,19 +42,29 @@ const useUi = () => {
             setEnemies(prev => prev + value)
         })
 
+        ObserverEmitter.on(EVENTS.listen.gameOver, () => {
+            setGameOver(true)
+            setStart(false)
+            setEnemies(0)
+            setResetCooldown(false)
+        })
+
         return () => {
             ObserverEmitter.off(EVENTS.listen.resetCooldown)
             ObserverEmitter.off(EVENTS.listen.getEnemies)
+            ObserverEmitter.off(EVENTS.listen.gameOver)
         }
     }, [])
 
 
     return {
         start,
+        gameOver,
         resetCooldown,
         enemies,
         handleStart,
-        handleTower
+        handleTower,
+        handleGameOver
     }
 }
 

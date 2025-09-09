@@ -45,6 +45,14 @@ export default class ClickRespawnSystem extends BaseSystem {
         }
     }
 
+    resetGame() {
+        this.spawnedTowers.forEach(tower => {
+            this.scene.remove(tower);
+        });
+        this.spawnedTowers.clear();
+        this.count = 0;
+    }
+
     update(delta) {
         for (const tower of this.spawnedTowers.values()) {
             tower.update(delta);
