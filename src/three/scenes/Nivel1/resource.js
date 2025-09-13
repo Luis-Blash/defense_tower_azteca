@@ -11,7 +11,7 @@ import QuetzalcoatlModel from "@assets/models/Quetzalcoatl12.glb";
 import Pyramid from "@three/entities/pyramid/Pyramid";
 import Golem from "@three/entities/enemy/Golem";
 import Warrior from "@three/entities/enemy/Warrior";
-import Waypoint from "@three/entities/waypoint/Waypoint";
+import Waypoint from "@three/entities/Waypoint/Waypoint";
 import MapScene from "@three/entities/maps/MapScene";
 import Quetzalcoatl from "@three/entities/towers/Quetzalcoatl";
 import Projectile from "@three/entities/projectile/Projectile";
@@ -44,7 +44,7 @@ export const createResourcesEntities = ({ loadingManager }) => {
         tree.visible = false;
         const rock = mesh.getObjectByName("piedra_100");
         rock.visible = false;
-        
+
     });
 
     const prototypeQuetzalcoatl = new Quetzalcoatl({ name: "QuetzalcoatlProto", loadingManager, modelPath: QuetzalcoatlModel });
@@ -93,8 +93,16 @@ export const configLevel1 = () => {
             spawnInterval: 3000,
             maxEnemies: 3,
             enemiesTypes: [
-                { EnemyClass: Golem, config: { speed: 2.5, life: 120, maxLife: 120 } },
-                { EnemyClass: Warrior, config: { speed: 2.8, life: 100, maxLife: 100 } },
+                {
+                    EnemyClass: Golem,
+                    protoKey: "GolemProto",
+                    config: { speed: 2.5, life: 120, maxLife: 120 }
+                },
+                {
+                    EnemyClass: Warrior,
+                    protoKey: "WarriorProto",
+                    config: { speed: 2.8, life: 100, maxLife: 100 }
+                },
             ]
         }
     ]
@@ -109,22 +117,22 @@ export const createClickTower = (prototypeQuetzalcoatl, position, projectileResp
 
     const protoModel = prototypeQuetzalcoatl.getComponent("model").getModelInstance();
     const protoGLTF = prototypeQuetzalcoatl.getComponent("model").getGLTF()
-    
 
-    const tower = new Quetzalcoatl({ name: "Quetzalcoatl", radius: 8,damage: 20, debugRange: false });
+
+    const tower = new Quetzalcoatl({ name: "Quetzalcoatl", radius: 8, damage: 20, debugRange: false });
     tower.position.set(position.x, 0, position.z);
     tower.getComponent("model").modelInstance = SkeletonUtils.clone(protoModel);
     tower.getComponent("model").gltf = protoGLTF;
     tower.add(tower.getComponent("model").getModelInstance());
     const animComp = tower.getComponent("animation");
     animComp.initMixer(
-      tower.getComponent("model").getModelInstance(),
-      protoGLTF?.animations
+        tower.getComponent("model").getModelInstance(),
+        protoGLTF?.animations
     );
     tower.getComponent("model").getModelInstance().position.set(0, -1, 0);
     tower.getComponent("model").getModelInstance().scale.set(2, 2, 2);
-    tower.getSystem("attack").setActionProjectiles(({entity, target}) => {
-        projectileRespawnSystem.addProjectile({ProjectileClass: Projectile, entity, target})
+    tower.getSystem("attack").setActionProjectiles(({ entity, target }) => {
+        projectileRespawnSystem.addProjectile({ ProjectileClass: Projectile, entity, target })
     })
     return tower
 }

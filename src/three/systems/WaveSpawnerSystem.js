@@ -1,7 +1,6 @@
 import * as SkeletonUtils from "three/examples/jsm/utils/SkeletonUtils.js";
 import BaseSystem from "@three/base/BaseSystem";
 import SelectiveObserverSystem from "./EvenEmitterSystem";
-import HealthBarComponent from "@three/components/HealthBarComponent";
 
 export default class WaveSpawnerSystem extends BaseSystem {
   constructor({ scene, prototypes = {}, waves = [], pathWaypoints = [], goal = null }) {
@@ -63,13 +62,13 @@ export default class WaveSpawnerSystem extends BaseSystem {
     });
 
     entitiesToRemove.forEach((entityWrapper) => {
-      const entity = entityWrapper.entity;      
+      const entity = entityWrapper.entity;
       this.scene.remove(entity);
       this.activeEntities.delete(entityWrapper);
       this.eliminatedEntities++;
     });
 
-    if(this.eliminatedEntities === 3){
+    if (this.eliminatedEntities === 3) {
       this.gameover();
     }
 
@@ -78,8 +77,8 @@ export default class WaveSpawnerSystem extends BaseSystem {
   _spawnEnemy(wave, index) {
     const randomIndex = Math.floor(Math.random() * wave.enemiesTypes.length);
     const type = wave.enemiesTypes[randomIndex];
-    const protoKey = type.EnemyClass.name;
-    const proto = this.prototypes[protoKey];
+    const protoKey = type.protoKey;
+    const proto = Object.values(this.prototypes).find(p => p.name === protoKey);
     if (!proto) return;
 
     const protoModel = proto.getComponent("model").getModelInstance();
